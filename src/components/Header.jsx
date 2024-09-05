@@ -99,7 +99,7 @@ const NavButton = ({ icon, label, to, hasDropdown, dropdownItems, isOpen, onTogg
         {label}
       </button>
       {hasDropdown && isOpen && (
-        <div className="dropdown">
+        <div className="dropdown z-10">
           {dropdownItems.map((item, index) => (
             <Link key={index} to={item.to} className="block p-2 border-b">
               {item.label}
