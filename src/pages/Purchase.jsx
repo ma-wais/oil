@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ProductTable() {
+function PurchaseInv() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
     billNo: "",
@@ -8,7 +8,6 @@ function ProductTable() {
     party: "",
     ng: "",
     product: "",
-    lotNo: "",
     weight: "",
     cut: "",
     filterWeight: "",
@@ -30,7 +29,6 @@ function ProductTable() {
       party: "",
       ng: "",
       product: "",
-      lotNo: "",
       weight: "",
       cut: "",
       filterWeight: "",
@@ -47,7 +45,7 @@ function ProductTable() {
 
   return (
     <div className="p-6 bg-white shadow-md rounded-md rtl">
-      <h2 className="text-xl font-semibold mb-4">Product Sale Table</h2>
+      <h1 className="text-xl font-semibold mb-4">Purchase Item Table</h1>
       <div className="grid grid-cols-4 gap-4 mb-4 text-right">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -83,6 +81,22 @@ function ProductTable() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
+            Party Bill No
+          </label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-md"
+            value={productDetails.partyBillNo}
+            onChange={(e) =>
+              setProductDetails({
+                ...productDetails,
+                partyBillNo: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Party
           </label>
           <input
@@ -97,54 +111,6 @@ function ProductTable() {
             }
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cash Party Name
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.partyBillNo}
-            onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                partyBillNo: e.target.value,
-              })
-            }
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Broker
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.partyBillNo}
-            onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                partyBillNo: e.target.value,
-              })
-            }
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Adda
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.partyBillNo}
-            onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                partyBillNo: e.target.value,
-              })
-            }
-          />
-        </div>
       </div>
 
       <table className="w-full table-auto mb-4 text-right">
@@ -152,7 +118,6 @@ function ProductTable() {
           <tr>
             <th className="border px-4 py-2">Ng</th>
             <th className="border px-4 py-2">Product</th>
-            <th className="border px-4 py-2">Lot No.</th>
             <th className="border px-4 py-2">Weight</th>
             <th className="border px-4 py-2">Cut</th>
             <th className="border px-4 py-2">Filter Weight</th>
@@ -167,7 +132,6 @@ function ProductTable() {
             <tr key={index}>
               <td className="border px-4 py-2">{product.ng}</td>
               <td className="border px-4 py-2">{product.product}</td>
-              <td className="border px-4 py-2">{product.lotNo}</td>
               <td className="border px-4 py-2">{product.weight}</td>
               <td className="border px-4 py-2">{product.cut}</td>
               <td className="border px-4 py-2">{product.filterWeight}</td>
@@ -184,7 +148,6 @@ function ProductTable() {
         {[
           "Ng",
           "Product",
-          "Lot No.",
           "Weight",
           "Cut",
           "Filter Weight",
@@ -252,10 +215,57 @@ function ProductTable() {
             }
           />
         </div>
-        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Fare
+          </label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-md"
+            value={productDetails.fare}
+            onChange={(e) =>
+              setProductDetails({
+                ...productDetails,
+                fare: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Net Amount
+          </label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-md"
+            value={productDetails.netAmount}
+            onChange={(e) =>
+              setProductDetails({
+                ...productDetails,
+                netAmount: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Purchase Expense
+          </label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-md"
+            value={productDetails.purchaseExpense}
+            onChange={(e) =>
+              setProductDetails({
+                ...productDetails,
+                purchaseExpense: e.target.value,
+              })
+            }
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-export default ProductTable;
+export default PurchaseInv;

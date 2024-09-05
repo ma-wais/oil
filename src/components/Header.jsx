@@ -50,7 +50,7 @@ const Header = () => {
         />
         <NavButton
           icon={<FaUserPlus className="text-xl" />}
-          label="Wealth came"
+          label="Purchase"
           hasDropdown
           dropdownItems={dropdownItems.wealth}
           isOpen={openDropdown === 'wealth'}
