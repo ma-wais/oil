@@ -37,9 +37,8 @@ const Header = () => {
     <header className="bg-white shadow">
       <nav className="flex justify-center md:px-6 py-2 md:gap-6 bg-gray-200">
         <NavButton
-          icon={<FaHome className="text-xl" />}
+          icon={<Link to="/"><FaHome className="text-xl" /></Link>}
           label="Homepage"
-          to="/"
         />
         <NavButton
           icon={<FaCog className="text-xl" />}
