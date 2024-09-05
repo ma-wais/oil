@@ -1,7 +1,7 @@
 import { IoNewspaperOutline, IoStatsChartSharp } from "react-icons/io5";
 import { TfiStatsDown, TfiStatsUp } from "react-icons/tfi";
 import { Link } from "react-router-dom";
-import "./home.scss";
+import "./home.css";
 
 const QuickLinkButton = ({ icon, label, to }) => (
   <Link to={to} className="flex flex-col items-center py-5 bg-white rounded">
