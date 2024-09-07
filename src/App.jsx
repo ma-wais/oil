@@ -6,6 +6,9 @@ import SaleReport from "./pages/SaleReport";
 import SaleAddTable from "./pages/ProductTable";
 import Header from "./components/Header";
 import PurchaseInv from "./pages/Purchase";
+import PurchaseInvoiceList from "./pages/PurchaseList";
+
+export const server = "http://localhost:5000/api";
 
 function App() {
   return (
@@ -17,6 +20,8 @@ function App() {
         <Route path="/sale-report" element={<SaleReport />} />
         <Route path="/sale-invoice" element={<SaleAddTable />} />
         <Route path="/wealth-invoice" element={<PurchaseInv />} />
+        <Route path="/wealth-list" element={<PurchaseInvoiceList />} />
+
       </Routes>
     </BrowserRouter>
   );

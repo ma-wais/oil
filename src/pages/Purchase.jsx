@@ -1,40 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Select from "react-select";
+import axios from "axios";
+import { server } from "../App";
+
+const options = [
+  { value: "sarson", label: "Sarson" },
+  { value: "taramira", label: "Taramira" },
+  { value: "banola", label: "Banola" },
+];
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
+    description: "",
+    quantity: "",
+    weight: "Kg",
+    rate: "",
+    total: "",
+  });
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [invoiceDetails, setInvoiceDetails] = useState({
     billNo: "",
     date: "",
     customerName: "",
-    description: "",
-    quantity: "",
-    weight: "",
-    unit: "",
-    rate: "",
-    total: "",
-    wasool: "",
-    netAmount: "",
+    carNo: "",
+    carRent: "",
+    gojarkhanWeight: "",
+    receivedWeight: "",
+    nag: "",
     previousBalance: "",
-    grandTotal: "",
   });
+  const [netAmount, setNetAmount] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+
+  useEffect(() => {
+    const { quantity, rate } = productDetails;
+    const total = (parseFloat(quantity) || 0) * (parseFloat(rate) || 0);
+    setProductDetails((prevDetails) => ({
+      ...prevDetails,
+      total: total.toFixed(2),
+    }));
+  }, [productDetails.quantity, productDetails.rate]);
+
+  useEffect(() => {
+    const productsTotal = products.reduce((acc, product) => {
+      return acc + (parseFloat(product.total) || 0);
+    }, 0);
+
+    const carRent = parseFloat(invoiceDetails.carRent) || 0;
+    const newGrandTotal = productsTotal + carRent;
+    setNetAmount(newGrandTotal.toFixed(2));
+    setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
+  }, [products, invoiceDetails.carRent, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
     setProducts([...products, productDetails]);
     setProductDetails({
-      billNo: "",
-      date: "",
-      customerName: "",
       description: "",
       quantity: "",
-      weight: "",
-      unit: "",
+      weight: "Kg",
       rate: "",
       total: "",
-      wasool: "",
-      netAmount: "",
-      previousBalance: "",
-      grandTotal: "",
     });
+    setSelectedOption(null);
+  };
+
+  const deleteProduct = (indexToDelete) => {
+    setProducts(products.filter((_, index) => index !== indexToDelete));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      ...invoiceDetails,
+      products,
+      netAmount,
+      grandTotal,
+    };
+    console.log(data);
+    try {
+      const response = await axios.post(`${server}/purchase`, data);
+      console.log(response.data);
+      alert("Invoice created successfully");
+      setInvoiceDetails({
+        billNo: "",
+        date: "",
+        customerName: "",
+        carNo: "",
+        carRent: "",
+        gojarkhanWeight: "",
+        receivedWeight: "",
+        nag: "",
+        previousBalance: "",
+      })
+      setProducts([]);
+    } catch (error) {
+      console.error(error);
+      alert("Error creating invoice");
+    }
   };
 
   return (
@@ -48,10 +111,10 @@ function ProductTable() {
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.billNo}
+            value={invoiceDetails.billNo}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 billNo: e.target.value,
               })
             }
@@ -64,10 +127,10 @@ function ProductTable() {
           <input
             type="date"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.date}
+            value={invoiceDetails.date}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 date: e.target.value,
               })
             }
@@ -80,10 +143,10 @@ function ProductTable() {
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.customerName}
+            value={invoiceDetails.customerName}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 customerName: e.target.value,
               })
             }
@@ -99,41 +162,73 @@ function ProductTable() {
             <th className="border px-4 py-2">Weight</th>
             <th className="border px-4 py-2">Rate</th>
             <th className="border px-4 py-2">Total</th>
+            <th className="border px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product, index) => (
             <tr key={index}>
-              <td className="border px-4 py-2">{product.product}</td>
+              <td className="border px-4 py-2">{product.description}</td>
               <td className="border px-4 py-2">{product.quantity}</td>
               <td className="border px-4 py-2">{product.weight}</td>
               <td className="border px-4 py-2">{product.rate}</td>
               <td className="border px-4 py-2">{product.total}</td>
+              <td className="border px-4 py-2">
+                <button
+                  onClick={() => deleteProduct(index)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="grid grid-cols-5 gap-4 mb-4 text-right">
-        {["Product", "Quantity.", "Weight", "Rate", "Total"].map(
-          (label, index) => (
-            <div key={index}>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {label}
-              </label>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                value={productDetails[label.toLowerCase().replace(" ", "")]}
-                onChange={(e) =>
+      <div className="grid grid-cols-6 gap-4 mb-4 text-right">
+        {["Description", "Quantity", "Weight", "Rate", "Total"].map(
+          (label, index) =>
+            index < 1 ? (
+              <Select
+                name={label}
+                placeholder={label}
+                value={selectedOption}
+                key={index}
+                options={options}
+                onChange={(e) => {
+                  setSelectedOption(e);
                   setProductDetails({
                     ...productDetails,
-                    [label.toLowerCase().replace(" ", "")]: e.target.value,
-                  })
-                }
+                    description: e.value,
+                  });
+                }}
+                className="mt-7"
               />
-            </div>
-          )
+            ) : (
+              <div key={index}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {label}
+                </label>
+                <input
+                  type={label === "Weight" ? "text" : "number"}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  value={
+                    label === "Weight"
+                      ? "Kg"
+                      : productDetails[label.toLowerCase().replace(" ", "")]
+                  }
+                  readOnly={label === "Weight"}
+                  onChange={(e) =>
+                    setProductDetails({
+                      ...productDetails,
+                      [label.toLowerCase().replace(" ", "")]: e.target.value,
+                    })
+                  }
+                  disabled={label === "Total"}
+                />
+              </div>
+            )
         )}
       </div>
       <button
@@ -154,50 +249,47 @@ function ProductTable() {
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.carNo}
+            value={invoiceDetails.carNo}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 carNo: e.target.value,
               })
             }
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Car Fare
           </label>
           <input
-            type="text"
+            type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.carFare}
+            value={invoiceDetails.carRent}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                carFare: e.target.value,
+              setInvoiceDetails({
+                ...invoiceDetails,
+                carRent: e.target.value,
               })
             }
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Previous Weight
           </label>
           <input
-            type="text"
+            type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.previousWeight}
+            value={invoiceDetails.gojarkhanWeight}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                previousWeight: e.target.value,
+              setInvoiceDetails({
+                ...invoiceDetails,
+                gojarkhanWeight: e.target.value,
               })
             }
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             New Weight
@@ -205,16 +297,15 @@ function ProductTable() {
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.newWeight}
+            value={invoiceDetails.receivedWeight}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                newWeight: e.target.value,
+              setInvoiceDetails({
+                ...invoiceDetails,
+                receivedWeight: e.target.value,
               })
             }
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Nag
@@ -222,32 +313,26 @@ function ProductTable() {
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.nag}
+            value={invoiceDetails.nag}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 nag: e.target.value,
               })
             }
           />
         </div>
       </div>
-      
-      <div className="grid grid-cols-4 gap-4 mb-4 text-right">
+
+      <div className="grid grid-cols-5 gap-4 mb-4 text-right">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Total
           </label>
           <input
-            type="text"
+            type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.netAmount}
-            onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                netAmount: e.target.value,
-              })
-            }
+            value={netAmount}
           />
         </div>
         <div>
@@ -255,33 +340,27 @@ function ProductTable() {
             Previous Balance
           </label>
           <input
-            type="text"
+            type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.previousBalance}
+            value={invoiceDetails.previousBalance}
             onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
+              setInvoiceDetails({
+                ...invoiceDetails,
                 previousBalance: e.target.value,
               })
             }
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Grand Total
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={productDetails.grandTotal}
-            onChange={(e) =>
-              setProductDetails({
-                ...productDetails,
-                grandTotal: e.target.value,
-              })
-            }
-          />
+        <div className="mt-6 text-right">
+          <span className="text-lg font-semibold">Grand Total: </span>
+          <span className="text-lg">{grandTotal}</span>
         </div>
+        <button
+          className="bg-blue-500 text-white rounded-md block w-40 m-4"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
