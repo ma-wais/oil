@@ -148,7 +148,7 @@ function ProductTable() {
       <table className="w-full table-auto my-10 text-right">
         <thead>
           <tr>
-            <th className="border px-4 py-2">Product</th>
+            <th className="border px-4 py-2">Description</th>
             <th className="border px-4 py-2">Quantity</th>
             <th className="border px-4 py-2">Unit</th>
             <th className="border px-4 py-2">Rate</th>
@@ -180,23 +180,7 @@ function ProductTable() {
       <div className="grid grid-cols-6 gap-4 mb-4 text-right">
         {["Description", "Quantity", "Unit", "Rate", "Total"].map(
           (label, index) =>
-            index < 1 ? (
-              <Select
-                name={label}
-                placeholder={label}
-                value={selectedOption}
-                key={index}
-                options={options}
-                onChange={(e) => {
-                  setSelectedOption(e);
-                  setProductDetails({
-                    ...productDetails,
-                    description: e.value,
-                  });
-                }}
-                className="mt-7"
-              />
-            ) : index === 2 ? (
+            index === 2 ? (
               <div>
                 <select
                   className="w-full mt-7 p-2 border border-gray-300 rounded-md"
@@ -220,7 +204,7 @@ function ProductTable() {
                   {label}
                 </label>
                 <input
-                  type="number"
+                  type={label === "Description" ? "text" : "number"}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   value={productDetails[label.toLowerCase().replace(" ", "")]}
                   onChange={(e) =>
@@ -271,7 +255,7 @@ function ProductTable() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            ReceivedCash:
+            Wasool
           </label>
           <input
             type="number"
