@@ -14,7 +14,7 @@ function ProductTable() {
   const [productDetails, setProductDetails] = useState({
     description: "",
     quantity: "",
-    weight: "Kg",
+    Unit: "",
     rate: "",
     total: "",
   });
@@ -26,6 +26,7 @@ function ProductTable() {
     previousBalance: "",
   });
   const [netAmount, setNetAmount] = useState(0);
+  const [receivedCash, setReceivedCash] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ function ProductTable() {
     setProductDetails({
       description: "",
       quantity: "",
-      weight: "Kg",
+      Unit: "",
       rate: "",
       total: "",
     });
@@ -69,11 +70,12 @@ function ProductTable() {
       ...invoiceDetails,
       products,
       netAmount,
+      receivedCash,
       grandTotal,
     };
     console.log(data);
     try {
-      const response = await axios.post(`${server}/purchase`, data);
+      const response = await axios.post(`${server}/sales`, data);
       console.log(response.data);
       alert("Invoice created successfully");
       setInvoiceDetails({
@@ -148,7 +150,7 @@ function ProductTable() {
           <tr>
             <th className="border px-4 py-2">Product</th>
             <th className="border px-4 py-2">Quantity</th>
-            <th className="border px-4 py-2">Weight</th>
+            <th className="border px-4 py-2">Unit</th>
             <th className="border px-4 py-2">Rate</th>
             <th className="border px-4 py-2">Total</th>
             <th className="border px-4 py-2">Action</th>
@@ -159,7 +161,7 @@ function ProductTable() {
             <tr key={index}>
               <td className="border px-4 py-2">{product.description}</td>
               <td className="border px-4 py-2">{product.quantity}</td>
-              <td className="border px-4 py-2">{product.weight}</td>
+              <td className="border px-4 py-2">{product.Unit}</td>
               <td className="border px-4 py-2">{product.rate}</td>
               <td className="border px-4 py-2">{product.total}</td>
               <td className="border px-4 py-2">
@@ -176,7 +178,7 @@ function ProductTable() {
       </table>
 
       <div className="grid grid-cols-6 gap-4 mb-4 text-right">
-        {["Description", "Quantity", "Weight", "Rate", "Total"].map(
+        {["Description", "Quantity", "Unit", "Rate", "Total"].map(
           (label, index) =>
             index < 1 ? (
               <Select
@@ -194,20 +196,33 @@ function ProductTable() {
                 }}
                 className="mt-7"
               />
+            ) : index === 2 ? (
+              <div>
+                <select
+                  className="w-full mt-7 p-2 border border-gray-300 rounded-md"
+                  value={productDetails.Unit}
+                  onChange={(e) =>
+                    setProductDetails({
+                      ...productDetails,
+                      [label.replace(" ", "")]: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Unit</option>
+                  <option value="kg">KG</option>
+                  <option value="mans">Mans</option>
+                  <option value="piece">Piece</option>
+                </select>
+              </div>
             ) : (
               <div key={index}>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {label}
                 </label>
                 <input
-                  type={label === "Weight" ? "text" : "number"}
+                  type="number"
                   className="w-full p-2 border border-gray-300 rounded-md"
-                  value={
-                    label === "Weight"
-                      ? "Kg"
-                      : productDetails[label.toLowerCase().replace(" ", "")]
-                  }
-                  readOnly={label === "Weight"}
+                  value={productDetails[label.toLowerCase().replace(" ", "")]}
                   onChange={(e) =>
                     setProductDetails({
                       ...productDetails,
@@ -252,6 +267,17 @@ function ProductTable() {
                 previousBalance: e.target.value,
               })
             }
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            ReceivedCash:
+          </label>
+          <input
+            type="number"
+            min={0}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            onChange={(e) => setReceivedCash(e.target.value)}
           />
         </div>
         <div className="mt-6 text-right">

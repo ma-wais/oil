@@ -1,14 +1,59 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { server } from '../App';
 
-function PasswordChangeForm() {
+const PasswordChangeForm = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    console.log('Stored token:', storedToken);
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      console.error('No token found in localStorage');
+    }
+  }, []);
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (!token) {
+      console.error('No token provided');
+      return;
+    }
+  
+    try {
+      const response = await axios.post(`${server}/change`, 
+        {
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <div className="w-full max-w-sm mx-auto p-6 bg-white shadow-md rounded-md">
+    <div className="w-full max-w-sm mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
       <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Enter Current Password:
@@ -42,7 +87,10 @@ function PasswordChangeForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md"
+        >
           Save
         </button>
       </form>
