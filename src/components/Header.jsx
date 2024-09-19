@@ -10,7 +10,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { server } from "../App";
 
-const Header = ({setToken, setUser }) => {
+const Header = ({ setToken, setUser }) => {
   const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -21,12 +21,12 @@ const Header = ({setToken, setUser }) => {
       { to: "/crushing-list", label: "Crushing Records" },
     ],
     wealth: [
-      { to: "/wealth-invoice", label: "Invoice" },
-      { to: "/wealth-list", label: "List" },
+      { to: "/wealth-invoice", label: "Purchase Invoice" },
+      { to: "/wealth-list", label: "Purchase List" },
     ],
     sales: [
-      { to: "/sale-invoice", label: "Invoice" },
-      { to: "/sale-list", label: "List" },
+      { to: "/sale-invoice", label: "Sale Invoice" },
+      { to: "/sale-list", label: "Sale List" },
     ],
     stock: [
       { to: "/stock", label: "Stock" },
@@ -68,21 +68,12 @@ const Header = ({setToken, setUser }) => {
           label="Homepage"
         />
         <NavButton
-          icon={<FaCog className="text-xl" />}
-          label="Back Office"
+          icon={<FaHandHoldingUsd className="text-xl" />}
+          label="Sale of goods"
           hasDropdown
-          dropdownItems={dropdownItems.boxOffice}
-          isOpen={openDropdown === "boxOffice"}
-          onToggle={() => handleDropdownToggle("boxOffice")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <NavButton
-          icon={<FaCog className="text-xl" />}
-          label="Crushings"
-          hasDropdown
-          dropdownItems={dropdownItems.crushings}
-          isOpen={openDropdown === "crushings"}
-          onToggle={() => handleDropdownToggle("crushings")}
+          dropdownItems={dropdownItems.sales}
+          isOpen={openDropdown === "sales"}
+          onToggle={() => handleDropdownToggle("sales")}
           onItemClick={handleDropdownItemClick}
         />
         <NavButton
@@ -96,15 +87,6 @@ const Header = ({setToken, setUser }) => {
         />
         <NavButton
           icon={<FaHandHoldingUsd className="text-xl" />}
-          label="Sale of goods"
-          hasDropdown
-          dropdownItems={dropdownItems.sales}
-          isOpen={openDropdown === "sales"}
-          onToggle={() => handleDropdownToggle("sales")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <NavButton
-          icon={<FaHandHoldingUsd className="text-xl" />}
           label="Stock"
           hasDropdown
           dropdownItems={dropdownItems.stock}
@@ -112,9 +94,27 @@ const Header = ({setToken, setUser }) => {
           onToggle={() => handleDropdownToggle("stock")}
           onItemClick={handleDropdownItemClick}
         />
+        <NavButton
+          icon={<FaCog className="text-xl" />}
+          label="Crushings"
+          hasDropdown
+          dropdownItems={dropdownItems.crushings}
+          isOpen={openDropdown === "crushings"}
+          onToggle={() => handleDropdownToggle("crushings")}
+          onItemClick={handleDropdownItemClick}
+        />
         <Link to={"/sale-report"}>
           <NavButton icon={<FaChartBar className="text-xl" />} label="Report" />
         </Link>
+        <NavButton
+          icon={<FaCog className="text-xl" />}
+          label="Back Office"
+          hasDropdown
+          dropdownItems={dropdownItems.boxOffice}
+          isOpen={openDropdown === "boxOffice"}
+          onToggle={() => handleDropdownToggle("boxOffice")}
+          onItemClick={handleDropdownItemClick}
+        />
         <button
           onClick={() => logout()}
           className="px-2 h-10 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
