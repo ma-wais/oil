@@ -9,12 +9,12 @@ const PasswordChangeForm = () => {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = sessionStorage.getItem('token');
     console.log('Stored token:', storedToken);
     if (storedToken) {
       setToken(storedToken);
     } else {
-      console.error('No token found in localStorage');
+      console.error('No token found');
     }
   }, []);
   

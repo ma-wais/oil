@@ -20,11 +20,10 @@ const Home = () => {
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {/* <QuickLinkButton icon={<FaCalculator />} label="Account Name" /> */}
-            <QuickLinkButton icon={<IoNewspaperOutline />} label="Cash In" />
-            <QuickLinkButton icon={<IoNewspaperOutline />} label="Cash Out" />
-            <QuickLinkButton icon={<IoStatsChartSharp />} label="Stock" />
-            <QuickLinkButton icon={<TfiStatsUp />} label="Sales" />
-            <QuickLinkButton icon={<TfiStatsDown />} label="Purchase" />
+            <QuickLinkButton icon={<IoNewspaperOutline />} label="Cash In" to={"/wealth-invoice"}/>
+            <QuickLinkButton icon={<IoStatsChartSharp />} label="Stock" to={"/stock"}/>
+            <QuickLinkButton icon={<TfiStatsUp />} label="Sales" to={"/sale-list"} />
+            <QuickLinkButton icon={<TfiStatsDown />} label="Purchases" to={"/wealth-list"} />
             <QuickLinkButton
               icon={<IoNewspaperOutline />}
               label="Sell Report "

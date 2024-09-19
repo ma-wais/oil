@@ -5,7 +5,6 @@ import {
   FaCog,
   FaUserPlus,
   FaHandHoldingUsd,
-  FaExchangeAlt,
   FaChartBar,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +16,10 @@ const Header = ({setToken, setUser }) => {
 
   const dropdownItems = {
     boxOffice: [{ to: "/changepass", label: "Change Password" }],
+    crushings: [
+      { to: "/crushing", label: "Crushing" },
+      { to: "/crushing-list", label: "Crushing Records" },
+    ],
     wealth: [
       { to: "/wealth-invoice", label: "Invoice" },
       { to: "/wealth-list", label: "List" },
@@ -25,10 +28,10 @@ const Header = ({setToken, setUser }) => {
       { to: "/sale-invoice", label: "Invoice" },
       { to: "/sale-list", label: "List" },
     ],
-    // stock: [
-    //   { to: "/stock-invoice", label: "Invoice" },
-    //   // { to: "/stock-list", label: "List" },
-    // ],
+    stock: [
+      { to: "/stock", label: "Stock" },
+      { to: "/stock-update", label: "Stock Update" },
+    ],
     // report: [{ to: "/sale-report", label: "Report" }],
   };
 
@@ -36,10 +39,10 @@ const Header = ({setToken, setUser }) => {
     try {
       await axios.post(`${server}/logout`, {}, { withCredentials: true });
 
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       setToken(null);
       setUser(null);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -66,11 +69,20 @@ const Header = ({setToken, setUser }) => {
         />
         <NavButton
           icon={<FaCog className="text-xl" />}
-          label="Box Office"
+          label="Back Office"
           hasDropdown
           dropdownItems={dropdownItems.boxOffice}
           isOpen={openDropdown === "boxOffice"}
           onToggle={() => handleDropdownToggle("boxOffice")}
+          onItemClick={handleDropdownItemClick}
+        />
+        <NavButton
+          icon={<FaCog className="text-xl" />}
+          label="Crushings"
+          hasDropdown
+          dropdownItems={dropdownItems.crushings}
+          isOpen={openDropdown === "crushings"}
+          onToggle={() => handleDropdownToggle("crushings")}
           onItemClick={handleDropdownItemClick}
         />
         <NavButton
@@ -91,12 +103,15 @@ const Header = ({setToken, setUser }) => {
           onToggle={() => handleDropdownToggle("sales")}
           onItemClick={handleDropdownItemClick}
         />
-        <Link to={"/stock"}>
-          <NavButton
-            icon={<FaExchangeAlt className="text-xl" />}
-            label="Stock"
-          />
-        </Link>
+        <NavButton
+          icon={<FaHandHoldingUsd className="text-xl" />}
+          label="Stock"
+          hasDropdown
+          dropdownItems={dropdownItems.stock}
+          isOpen={openDropdown === "stock"}
+          onToggle={() => handleDropdownToggle("stock")}
+          onItemClick={handleDropdownItemClick}
+        />
         <Link to={"/sale-report"}>
           <NavButton icon={<FaChartBar className="text-xl" />} label="Report" />
         </Link>

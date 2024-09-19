@@ -33,11 +33,11 @@ const Login = ({ setToken, setUser, token }) => {
         { withCredentials: true }
       );
       const token = response.data.token;
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
       setToken(token);
       setUser(response.data.user);
 
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Registration failed", error);
     }

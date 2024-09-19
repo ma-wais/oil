@@ -45,11 +45,15 @@ function ProductTable() {
 
     const newGrandTotal = productsTotal;
     setNetAmount(newGrandTotal.toFixed(2));
-    setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
-  }, [products, invoiceDetails.previousBalance]);
+    setGrandTotal(Number(newGrandTotal) + Number(invoiceDetails.previousBalance));
+  }, [products, invoiceDetails.previousBalance, receivedCash]);
 
   const addProduct = () => {
-    setProducts([...products, productDetails]);
+    const newProduct = {
+      ...productDetails,
+      id: Date.now(),
+    };
+    setProducts([...products, newProduct]);
     setProductDetails({
       description: "",
       quantity: "",
@@ -60,10 +64,10 @@ function ProductTable() {
     setSelectedOption(null);
   };
 
-  const deleteProduct = (indexToDelete) => {
-    setProducts(products.filter((_, index) => index !== indexToDelete));
+  const deleteProduct = (id) => {
+    setProducts(products.filter((product) => product.id !== id));
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
@@ -158,7 +162,7 @@ function ProductTable() {
         </thead>
         <tbody>
           {products.map((product, index) => (
-            <tr key={index}>
+            <tr key={product.id}>
               <td className="border px-4 py-2">{product.description}</td>
               <td className="border px-4 py-2">{product.quantity}</td>
               <td className="border px-4 py-2">{product.Unit}</td>
@@ -166,7 +170,7 @@ function ProductTable() {
               <td className="border px-4 py-2">{product.total}</td>
               <td className="border px-4 py-2">
                 <button
-                  onClick={() => deleteProduct(index)}
+                  onClick={() => deleteProduct(product.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded"
                 >
                   Delete
@@ -178,10 +182,11 @@ function ProductTable() {
       </table>
 
       <div className="grid grid-cols-6 gap-4 mb-4 text-right">
-        {["Description", "Quantity", "Unit", "Rate", "Total"].map(
-          (label, index) =>
-            index === 2 ? (
-              <div>
+        {["Description", "Quantity", "Unit", "Rate", "Total"].map((label) => {
+            const key = `input-${label}`;
+
+            return label === "Unit" ? (
+              <div key={key}>
                 <select
                   className="w-full mt-7 p-2 border border-gray-300 rounded-md"
                   value={productDetails.Unit}
@@ -199,7 +204,7 @@ function ProductTable() {
                 </select>
               </div>
             ) : (
-              <div key={index}>
+              <div key={key}>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {label}
                 </label>
@@ -213,11 +218,11 @@ function ProductTable() {
                       [label.toLowerCase().replace(" ", "")]: e.target.value,
                     })
                   }
-                  disabled={label === "Total"}
+               
                 />
               </div>
             )
-        )}
+          })}
       </div>
       <button
         onClick={addProduct}

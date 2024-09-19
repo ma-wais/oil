@@ -29,7 +29,7 @@ const Register = () => {
           password: formData.password,
         }, { withCredentials: true });
         console.log(response);
-        localStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("token", response.data.token);
         navigate("/");
       } catch (error) {
         console.error("Registration failed", error);
