@@ -32,6 +32,20 @@ function ProductTable() {
   });
   const [netAmount, setNetAmount] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(`${server}/contact?type=${"party"}`);
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
   useEffect(() => {
     const { quantity, rate } = productDetails;
@@ -51,7 +65,7 @@ function ProductTable() {
     const newGrandTotal = productsTotal + carRent;
     setNetAmount(newGrandTotal.toFixed(2));
     setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
-  }, [products, invoiceDetails.carRent, invoiceDetails.previousBalance]);
+  }, [products, invoiceDetails, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
     setProducts([...products, productDetails]);
@@ -140,16 +154,15 @@ function ProductTable() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Party Name
           </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={invoiceDetails.customerName}
-            onChange={(e) =>
-              setInvoiceDetails({
-                ...invoiceDetails,
-                customerName: e.target.value,
-              })
-            }
+          <Select
+            options={contacts.map((c) => ({
+              value: c.name,
+              label: `${c.name} (Balance: ${c.openingDr})`,
+            }))}
+            onChange={(e) => setInvoiceDetails({
+              ...invoiceDetails,
+              customerName: e.value,
+            })}
           />
         </div>
       </div>

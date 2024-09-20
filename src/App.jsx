@@ -15,8 +15,11 @@ import axios from "axios";
 import CreateCrushing from "./pages/CreateCrushing";
 import CrushingRecords from "./pages/CrushingHistory";
 import UpdateStock from "./pages/UpdateStock";
+import ContactManagement from "./pages/ContactMgmt";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
-export const server = "https://oil-api-grn9.onrender.com/api";
+// export const server = "http://localhost:5000/api";
+export const server = "https://oil-api-grn9.onrender.com/api"
 
 function App() {
   const [user, setUser] = useState();
@@ -56,17 +59,20 @@ function App() {
     <BrowserRouter>
       <Header setToken={setToken} setUser={setUser} />
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/changepass" element={<PasswordChangeForm />} />
-        <Route path="/sale-report" element={<SaleReport />} />
-        <Route path="/sale-invoice" element={<SaleAddTable />} />
-        <Route path="/sale-list" element={<SalesInvoiceList />} />
-        <Route path="/wealth-invoice" element={<PurchaseInv />} />
-        <Route path="/wealth-list" element={<PurchaseInvoiceList />} />
-        <Route path="/stock" element={<StockSummaryReport />} />
-        <Route path="/crushing" element={<CreateCrushing />} />
-        <Route path="/crushing-list" element={<CrushingRecords />} />
-        <Route path="/stock-update" element={<UpdateStock />} />
+        <Route element={<ProtectedRoute token={token} />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/changepass" element={<PasswordChangeForm />} />
+          <Route path="/sale-report" element={<SaleReport />} />
+          <Route path="/sale-invoice" element={<SaleAddTable />} />
+          <Route path="/sale-list" element={<SalesInvoiceList />} />
+          <Route path="/wealth-invoice" element={<PurchaseInv />} />
+          <Route path="/wealth-list" element={<PurchaseInvoiceList />} />
+          <Route path="/stock" element={<StockSummaryReport />} />
+          <Route path="/crushing" element={<CreateCrushing />} />
+          <Route path="/crushing-list" element={<CrushingRecords />} />
+          <Route path="/stock-update" element={<UpdateStock />} />
+          <Route path="/contact" element={<ContactManagement />} />
+        </Route>
 
         <Route
           path="/"

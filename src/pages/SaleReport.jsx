@@ -15,6 +15,10 @@ const SalesReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!startDate || !endDate) {
+      alert('Please enter both start and end dates');
+      return;
+    }
     try {
       const response = await axios.get(`${server}/sales`, {
         params: { startDate, endDate, billNo, customerName, itemName }
@@ -74,8 +78,8 @@ const SalesReport = () => {
               className="w-full p-2 border rounded"
             />
           </div>
-          <div>
-            <label className="block mb-2">Bill No.</label>
+          {/* <div> */}
+            {/* <label className="block mb-2">Bill No.</label>
             <input
               type="text"
               value={billNo}
@@ -91,7 +95,7 @@ const SalesReport = () => {
               onChange={(e) => setCustomerName(e.target.value)}
               className="w-full p-2 border rounded"
             />
-          </div>
+          </div> */}
           <div>
             <label className="block mb-2">Item Name</label>
             <input

@@ -3,18 +3,12 @@ import Select from "react-select";
 import axios from "axios";
 import { server } from "../App";
 
-const options = [
-  { value: "sarson", label: "Sarson" },
-  { value: "taramira", label: "Taramira" },
-  { value: "banola", label: "Banola" },
-];
-
 function ProductTable() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
     description: "",
     quantity: "",
-    Unit: "",
+    Unit: "mans",
     rate: "",
     total: "",
   });
@@ -28,6 +22,7 @@ function ProductTable() {
   const [netAmount, setNetAmount] = useState(0);
   const [receivedCash, setReceivedCash] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
+  const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     const { quantity, rate } = productDetails;
@@ -45,9 +40,23 @@ function ProductTable() {
 
     const newGrandTotal = productsTotal;
     setNetAmount(newGrandTotal.toFixed(2));
-    setGrandTotal(Number(newGrandTotal) + Number(invoiceDetails.previousBalance));
+    setGrandTotal(
+      Number(newGrandTotal) + Number(invoiceDetails.previousBalance)
+    );
   }, [products, invoiceDetails.previousBalance, receivedCash]);
 
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(`${server}/contact?type=${"customer"}`);
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
   const addProduct = () => {
     const newProduct = {
       ...productDetails,
@@ -67,7 +76,7 @@ function ProductTable() {
   const deleteProduct = (id) => {
     setProducts(products.filter((product) => product.id !== id));
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
@@ -135,16 +144,16 @@ function ProductTable() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Customer Name
           </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={invoiceDetails.customerName}
-            onChange={(e) =>
-              setInvoiceDetails({
-                ...invoiceDetails,
-                customerName: e.target.value,
-              })
-            }
+          <Select
+            options={contacts.map((c) => ({
+              value: c.name,
+              label: `${c.name} (Balance: ${c.openingDr})`,
+            }))}
+            onChange={(e) => setInvoiceDetails({
+              ...invoiceDetails,
+              customerName: e.value,
+            })}
+            className="w-[400px]"
           />
         </div>
       </div>
@@ -183,46 +192,45 @@ function ProductTable() {
 
       <div className="grid grid-cols-6 gap-4 mb-4 text-right">
         {["Description", "Quantity", "Unit", "Rate", "Total"].map((label) => {
-            const key = `input-${label}`;
+          const key = `input-${label}`;
 
-            return label === "Unit" ? (
-              <div key={key}>
-                <select
-                  className="w-full mt-7 p-2 border border-gray-300 rounded-md"
-                  value={productDetails.Unit}
-                  onChange={(e) =>
-                    setProductDetails({
-                      ...productDetails,
-                      [label.replace(" ", "")]: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Unit</option>
-                  <option value="kg">KG</option>
-                  <option value="mans">Mans</option>
-                  <option value="piece">Piece</option>
-                </select>
-              </div>
-            ) : (
-              <div key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {label}
-                </label>
-                <input
-                  type={label === "Description" ? "text" : "number"}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={productDetails[label.toLowerCase().replace(" ", "")]}
-                  onChange={(e) =>
-                    setProductDetails({
-                      ...productDetails,
-                      [label.toLowerCase().replace(" ", "")]: e.target.value,
-                    })
-                  }
-               
-                />
-              </div>
-            )
-          })}
+          return label === "Unit" ? (
+            <div key={key}>
+              <select
+                className="w-full mt-7 p-2 border border-gray-300 rounded-md"
+                value={productDetails.Unit}
+                onChange={(e) =>
+                  setProductDetails({
+                    ...productDetails,
+                    [label.replace(" ", "")]: e.target.value,
+                  })
+                }
+              >
+                {/* <option value="">Unit</option> */}
+                {/* <option value="kg">KG</option> */}
+                <option value="mans">Mans</option>
+                {/* <option value="piece">Piece</option> */}
+              </select>
+            </div>
+          ) : (
+            <div key={key}>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {label}
+              </label>
+              <input
+                type={label === "Description" ? "text" : "number"}
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={productDetails[label.toLowerCase().replace(" ", "")]}
+                onChange={(e) =>
+                  setProductDetails({
+                    ...productDetails,
+                    [label.toLowerCase().replace(" ", "")]: e.target.value,
+                  })
+                }
+              />
+            </div>
+          );
+        })}
       </div>
       <button
         onClick={addProduct}

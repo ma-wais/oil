@@ -32,7 +32,7 @@ const Header = ({ setToken, setUser }) => {
       { to: "/stock", label: "Stock" },
       { to: "/stock-update", label: "Stock Update" },
     ],
-    // report: [{ to: "/sale-report", label: "Report" }],
+    // stakeholders: [{ to: "/contact", label: "Stakeholders" }],
   };
 
   const logout = async () => {
@@ -61,7 +61,7 @@ const Header = ({ setToken, setUser }) => {
       <nav className="flex justify-center md:px-6 py-2 md:gap-6 bg-gray-200">
         <NavButton
           icon={
-            <Link to="/">
+            <Link to="/home">
               <FaHome className="text-xl" />
             </Link>
           }
@@ -115,6 +115,9 @@ const Header = ({ setToken, setUser }) => {
           onToggle={() => handleDropdownToggle("boxOffice")}
           onItemClick={handleDropdownItemClick}
         />
+         <Link to={"/contact"}>
+          <NavButton icon={<FaChartBar className="text-xl" />} label="Stakeholders" />
+        </Link>
         <button
           onClick={() => logout()}
           className="px-2 h-10 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
