@@ -113,7 +113,7 @@ function ProductTable() {
     setInvoiceDetails({
       ...invoiceDetails,
       customerName: selectedOption.value,
-      previousBalance: selectedContact ? selectedContact.openingCr : 0
+      previousBalance: selectedContact ? selectedContact.openingDr : 0
     });
     setSelectedOption(selectedOption);
   };
@@ -162,7 +162,7 @@ function ProductTable() {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingCr})`,
+              label: `${c.name} (Balance: ${c.openingDr})`,
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
@@ -258,7 +258,7 @@ function ProductTable() {
       <div className="grid grid-cols-5 gap-4 mb-4 text-right">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Car No.
+            Vehicle No.
           </label>
           <input
             type="text"
@@ -274,7 +274,7 @@ function ProductTable() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Car Fare
+            Vehicle Fare
           </label>
           <input
             type="number"
