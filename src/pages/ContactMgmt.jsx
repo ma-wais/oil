@@ -151,7 +151,7 @@ const ContactManagement = () => {
                 {contact.type}
               </td>
               <td className="border border-gray-300 p-2">
-                {contact.openingCr || 0}
+                {contact.openingDr || 0}
               </td>
             </tr>
           ))}
