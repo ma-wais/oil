@@ -111,7 +111,7 @@ function ProductTable() {
     setInvoiceDetails({
       ...invoiceDetails,
       customerName: selectedOption.value,
-      previousBalance: selectedContact ? selectedContact.openingDr : 0,
+      previousBalance: selectedContact ? selectedContact.openingCr : 0,
     });
     setSelectedOption(selectedOption);
   };
@@ -159,7 +159,7 @@ function ProductTable() {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingDr})`,
+              label: `${c.name} (Balance: ${c.openingCr})`,
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
