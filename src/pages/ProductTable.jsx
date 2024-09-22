@@ -17,7 +17,7 @@ function ProductTable() {
     billNo: "",
     date: "",
     customerName: "",
-    previousBalance: "",
+    previousBalance: 0,
   });
   const [netAmount, setNetAmount] = useState(0);
   const [receivedCash, setReceivedCash] = useState(0);
@@ -104,6 +104,18 @@ function ProductTable() {
     }
   };
 
+  const handleCustomerChange = (selectedOption) => {
+    const selectedContact = contacts.find(
+      (c) => c.name === selectedOption.value
+    );
+    setInvoiceDetails({
+      ...invoiceDetails,
+      customerName: selectedOption.value,
+      previousBalance: selectedContact ? selectedContact.openingDr : 0,
+    });
+    setSelectedOption(selectedOption);
+  };
+
   return (
     <div className="p-6 bg-white shadow-md rounded-md rtl">
       <h2 className="text-xl font-semibold mb-4">Product Sale Table</h2>
@@ -149,10 +161,8 @@ function ProductTable() {
               value: c.name,
               label: `${c.name} (Balance: ${c.openingDr})`,
             }))}
-            onChange={(e) => setInvoiceDetails({
-              ...invoiceDetails,
-              customerName: e.value,
-            })}
+            onChange={handleCustomerChange}
+            value={selectedOption}
             className="w-[400px]"
           />
         </div>
@@ -258,12 +268,6 @@ function ProductTable() {
             type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
             value={invoiceDetails.previousBalance}
-            onChange={(e) =>
-              setInvoiceDetails({
-                ...invoiceDetails,
-                previousBalance: e.target.value,
-              })
-            }
           />
         </div>
         <div>

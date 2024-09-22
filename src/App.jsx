@@ -18,8 +18,8 @@ import UpdateStock from "./pages/UpdateStock";
 import ContactManagement from "./pages/ContactMgmt";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
-// export const server = "http://localhost:5000/api";
-export const server = "https://oil-api-grn9.onrender.com/api"
+export const server = "http://localhost:5000/api";
+// export const server = "https://oil-api-grn9.onrender.com/api"
 
 function App() {
   const [user, setUser] = useState();

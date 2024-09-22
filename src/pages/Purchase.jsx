@@ -3,18 +3,12 @@ import Select from "react-select";
 import axios from "axios";
 import { server } from "../App";
 
-const options = [
-  { value: "sarson", label: "Sarson" },
-  { value: "taramira", label: "Taramira" },
-  { value: "banola", label: "Banola" },
-];
-
 function ProductTable() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
     description: "",
     quantity: "",
-    Unit: "",
+    Unit: "mans",
     rate: "",
     total: "",
   });
@@ -72,7 +66,7 @@ function ProductTable() {
     setProductDetails({
       description: "",
       quantity: "",
-      Unit: "",
+      Unit: "mans",
       rate: "",
       total: "",
     });
@@ -113,6 +107,17 @@ function ProductTable() {
       alert("Error creating invoice");
     }
   };
+
+  const handleCustomerChange = (selectedOption) => {
+    const selectedContact = contacts.find(c => c.name === selectedOption.value);
+    setInvoiceDetails({
+      ...invoiceDetails,
+      customerName: selectedOption.value,
+      previousBalance: selectedContact ? selectedContact.openingCr : 0
+    });
+    setSelectedOption(selectedOption);
+  };
+
 
   return (
     <div className="p-6 bg-white shadow-md rounded-md rtl">
@@ -157,12 +162,11 @@ function ProductTable() {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingDr})`,
+              label: `${c.name} (Balance: ${c.openingCr})`,
             }))}
-            onChange={(e) => setInvoiceDetails({
-              ...invoiceDetails,
-              customerName: e.value,
-            })}
+            onChange={handleCustomerChange}
+            value={selectedOption}
+            className="w-[400px]"
           />
         </div>
       </div>
@@ -202,23 +206,7 @@ function ProductTable() {
       <div className="grid grid-cols-6 gap-4 mb-4 text-right">
         {["Description", "Quantity", "Unit", "Rate", "Total"].map(
           (label, index) =>
-            index < 1 ? (
-              <Select
-                name={label}
-                placeholder={label}
-                value={selectedOption}
-                key={index}
-                options={options}
-                onChange={(e) => {
-                  setSelectedOption(e);
-                  setProductDetails({
-                    ...productDetails,
-                    description: e.value,
-                  });
-                }}
-                className="mt-7"
-              />
-            ) : index === 2 ? (
+           index === 2 ? (
               <div>
                 <select
                   className="w-full mt-7 p-2 border border-gray-300 rounded-md"
@@ -230,10 +218,10 @@ function ProductTable() {
                     })
                   }
                 >
-                  <option value="">Unit</option>
-                  <option value="kg">KG</option>
+                  {/* <option value="">Unit</option> */}
+                  {/* <option value="kg">KG</option> */}
                   <option value="mans">Mans</option>
-                  <option value="piece">Piece</option>
+                  {/* <option value="piece">Piece</option> */}
                 </select>
               </div>
             ) : (
@@ -242,7 +230,7 @@ function ProductTable() {
                   {label}
                 </label>
                 <input
-                  type="number"
+                  type={index === 0 ? "text" : "number"}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   value={productDetails[label.toLowerCase().replace(" ", "")]}
                   onChange={(e) =>
@@ -369,12 +357,6 @@ function ProductTable() {
             type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
             value={invoiceDetails.previousBalance}
-            onChange={(e) =>
-              setInvoiceDetails({
-                ...invoiceDetails,
-                previousBalance: e.target.value,
-              })
-            }
           />
         </div>
         <div className="mt-6 text-right">

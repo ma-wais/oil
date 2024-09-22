@@ -8,7 +8,7 @@ const ContactManagement = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [type, setType] = useState('');
   const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
@@ -21,6 +21,7 @@ const ContactManagement = () => {
     try {
       const response = await axios.get(`${server}/contact?type=${type}`);
       setContacts(response.data);
+      console.log(contacts)
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
@@ -41,11 +42,11 @@ const ContactManagement = () => {
   const handleUpdateBalance = async () => {
     if (!selectedContact) return;
     try {
-      await axios.post(`${server}/contact/update-balance`, {
-        id: selectedContact.value,
+      await axios.put(`${server}/balance`, {
+        name: selectedContact.value,
         amount: parseFloat(amount),
       });
-      setAmount('');
+      setAmount(0);
       fetchContacts();
     } catch (error) {
       console.error('Error updating balance:', error);
@@ -80,7 +81,7 @@ const ContactManagement = () => {
           
           <div className="mb-4">
             <Select
-              options={contacts.map(c => ({ value: c._id, label: c.name }))}
+              options={contacts.map(c => ({ value: c.name, label: c.name }))}
               onChange={setSelectedContact}
               placeholder={`Select ${type}`}
               className='w-[400px]'
@@ -101,7 +102,7 @@ const ContactManagement = () => {
                   <tr>
                     <td className="border border-gray-300 p-2">{selectedContact.label}</td>
                     <td className="border border-gray-300 p-2">
-                      {contacts.find(c => c._id === selectedContact.value)?.openingDr || 0}
+                      {contacts.find(c => c.name === selectedContact.value)?.openingCr || 0}
                     </td>
                   </tr>
                 </tbody>
