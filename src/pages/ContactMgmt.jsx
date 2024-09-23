@@ -8,8 +8,11 @@ const ContactManagement = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [type, setType] = useState("");
   const [name, setName] = useState("");
-  const [amount, setAmount] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [billNo, setBillNo] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     fetchAllContacts();
@@ -48,8 +51,14 @@ const ContactManagement = () => {
       await axios.put(`${server}/balance`, {
         name: selectedContact.value,
         amount: parseFloat(amount),
+        billNo,
+        date,
+        description,
       });
       setAmount(0);
+      setDescription("");
+      setBillNo("");
+      setDate("");
       fetchAllContacts();
     } catch (error) {
       console.error("Error updating balance:", error);
@@ -80,7 +89,24 @@ const ContactManagement = () => {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Amount (positive to increase, negative to decrease)"
+            placeholder="Amount"
+            className="border p-2 rounded mr-2 w-[400px]"
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 rounded mr-2 w-[400px]"
+          />
+          <input
+            type="text"
+            placeholder="Bill No"
+            onChange={(e) => setBillNo(e.target.value)}
+            className="border p-2 rounded mr-2 w-[400px]"
+          />
+          <input
+            type="date"
+            onChange={(e) => setDate(e.target.value)}
             className="border p-2 rounded mr-2 w-[400px]"
           />
           <button
