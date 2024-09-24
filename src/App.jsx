@@ -17,7 +17,7 @@ import CrushingRecords from "./pages/CrushingHistory";
 import UpdateStock from "./pages/UpdateStock";
 import ContactManagement from "./pages/ContactMgmt";
 import ProtectedRoute from "./pages/ProtectedRoute";
-import LedgerPage from "./pages/Ledger";
+// import LedgerPage from "./pages/Ledger";
 import Ledger from "./pages/SaleorPurchaseLedger";
 import PartyLedger from "./pages/PArtyLedger";
 
