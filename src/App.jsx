@@ -19,7 +19,7 @@ import ContactManagement from "./pages/ContactMgmt";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import LedgerPage from "./pages/Ledger";
 import Ledger from "./pages/SaleorPurchaseLedger";
-import PartyLedger from "./pages/PArtyLedger";
+import PartyLedger from "./pages/PartyLedger";
 
 // export const server = "http://localhost:5000/api";
 export const server = "https://oil-api-grn9.onrender.com/api"
