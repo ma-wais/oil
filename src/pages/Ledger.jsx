@@ -11,8 +11,9 @@ const LedgerPage = () => {
 
   const fetchLedgerRecords = async () => {
     try {
-      const response = await axios.get(`${server}/ledger`);
+      const response = await axios.get(`${server}/ledgerrecords`);
       setLedgerRecords(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching ledger records:', error);
     }

@@ -17,12 +17,12 @@ import CrushingRecords from "./pages/CrushingHistory";
 import UpdateStock from "./pages/UpdateStock";
 import ContactManagement from "./pages/ContactMgmt";
 import ProtectedRoute from "./pages/ProtectedRoute";
-// import LedgerPage from "./pages/Ledger";
+import LedgerPage from "./pages/Ledger";
 import Ledger from "./pages/SaleorPurchaseLedger";
 import PartyLedger from "./pages/PArtyLedger";
 
-// export const server = "http://localhost:5000/api";
-export const server = "https://oil-api-grn9.onrender.com/api"
+export const server = "http://localhost:5000/api";
+// export const server = "https://oil-api-grn9.onrender.com/api"
 
 function App() {
   const [user, setUser] = useState();
@@ -75,8 +75,7 @@ function App() {
           <Route path="/crushing-list" element={<CrushingRecords />} />
           <Route path="/stock-update" element={<UpdateStock />} />
           <Route path="/contact" element={<ContactManagement />} />
-          <Route path="/contact" element={<ContactManagement />} />
-          {/* <Route path="/Ledger" element={<LedgerPage />} /> */}
+          <Route path="/contactledger" element={<LedgerPage />} />
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/party" element={<PartyLedger />} />
 

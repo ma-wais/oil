@@ -34,6 +34,7 @@ const Header = ({ setToken, setUser }) => {
     ],
     stakeholders: [
       { to: "/contact", label: "Stakeholders" },
+      { to: "/contactledger", label: "Balance Records" },
       {
         to: "/ledger",
         label: "Customer Ledger",
@@ -133,9 +134,9 @@ const Header = ({ setToken, setUser }) => {
           dropdownItems={dropdownItems.stakeholders}
           isOpen={openDropdown === "stakeholders"}
           onToggle={() => handleDropdownToggle("stakeholders")}
-          onItemClick={handleDropdownItemClick} 
+          onItemClick={handleDropdownItemClick}
         />
-        
+
         <button
           onClick={() => logout()}
           className="px-2 h-10 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"

@@ -96,7 +96,7 @@ const SalesReport = () => {
               className="w-full p-2 border rounded"
             />
           </div> */}
-          <div>
+          {/* <div>
             <label className="block mb-2">Item Name</label>
             <input
               type="text"
@@ -104,7 +104,7 @@ const SalesReport = () => {
               onChange={(e) => setItemName(e.target.value)}
               className="w-full p-2 border rounded"
             />
-          </div>
+          </div> */}
         </div>
         <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
           Generate Report
