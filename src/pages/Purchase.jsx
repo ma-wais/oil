@@ -8,7 +8,7 @@ function ProductTable() {
   const [productDetails, setProductDetails] = useState({
     description: "",
     quantity: "",
-    Unit: "mans",
+    Unit: "",
     rate: "",
     total: "",
   });
@@ -66,7 +66,7 @@ function ProductTable() {
     setProductDetails({
       description: "",
       quantity: "",
-      Unit: "mans",
+      Unit: "",
       rate: "",
       total: "",
     });
@@ -218,10 +218,10 @@ function ProductTable() {
                     })
                   }
                 >
-                  {/* <option value="">Unit</option> */}
-                  {/* <option value="kg">KG</option> */}
+                  <option value="">Unit</option>
+                  <option value="kg">KG</option>
                   <option value="mans">Mans</option>
-                  {/* <option value="piece">Piece</option> */}
+                  <option value="piece">Piece</option>
                 </select>
               </div>
             ) : (

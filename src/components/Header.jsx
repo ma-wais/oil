@@ -32,7 +32,17 @@ const Header = ({ setToken, setUser }) => {
       { to: "/stock", label: "Stock" },
       { to: "/stock-update", label: "Stock Update" },
     ],
-    // stakeholders: [{ to: "/contact", label: "Stakeholders" }],
+    stakeholders: [
+      { to: "/contact", label: "Stakeholders" },
+      {
+        to: "/ledger",
+        label: "Customer Ledger",
+      },
+      {
+        to: "/party",
+        label: "Party Ledger",
+      },
+    ],
   };
 
   const logout = async () => {
@@ -115,9 +125,17 @@ const Header = ({ setToken, setUser }) => {
           onToggle={() => handleDropdownToggle("boxOffice")}
           onItemClick={handleDropdownItemClick}
         />
-         <Link to={"/contact"}>
-          <NavButton icon={<FaChartBar className="text-xl" />} label="Stakeholders" />
-        </Link>
+
+        <NavButton
+          icon={<FaUserPlus className="text-xl" />}
+          label="Stakeholders"
+          hasDropdown
+          dropdownItems={dropdownItems.stakeholders}
+          isOpen={openDropdown === "stakeholders"}
+          onToggle={() => handleDropdownToggle("stakeholders")}
+          onItemClick={handleDropdownItemClick} 
+        />
+        
         <button
           onClick={() => logout()}
           className="px-2 h-10 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
