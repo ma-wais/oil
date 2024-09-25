@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp, Trash2, Printer } from "lucide-react";
 import { server } from "../App";
+import PrintableInvoice from "./PrintInvoicesale";
+import ReactDOM from "react-dom";
 
 const PurchaseInvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -32,9 +34,51 @@ const PurchaseInvoiceList = () => {
       console.error("Error deleting invoice:", error);
     }
   };
+  
+  const openPrintableInvoice = (invoiceData) => {
+    console.log("Invoice data being passed to PrintableInvoice:", invoiceData);
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Invoice</title>
+          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        </head>
+        <body>
+          <div id="print-root"></div>
+          <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+          <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
 
-  const handlePrint = (invoice) => {
-    console.log("Printing invoice:", invoice);
+    const renderAndPrint = () => {
+      try {
+        ReactDOM.render(
+          <PrintableInvoice invoiceData={invoiceData} />,
+          printWindow.document.getElementById('print-root'),
+          () => {
+            console.log("PrintableInvoice rendered in new window");
+            printWindow.focus();
+            setTimeout(() => {
+              console.log("Attempting to print");
+              printWindow.print();
+            }, 1000);
+          }
+        );
+      } catch (error) {
+        console.error("Error rendering PrintableInvoice:", error);
+        printWindow.document.body.innerHTML = `<h1>Error rendering invoice: ${error.message}</h1>`;
+      }
+    };
+
+    if (printWindow.React && printWindow.ReactDOM) {
+      renderAndPrint();
+    } else {
+      printWindow.onload = renderAndPrint;
+    }
   };
 
   const handleSort = (column) => {
@@ -104,19 +148,19 @@ const PurchaseInvoiceList = () => {
                 {new Date(invoice.date).toLocaleDateString()}
               </td>
               <td className="py-3 px-6 text-left">
-                {invoice.items.map((item) => item.quantity).join(", ")}
+                {invoice && invoice.items.map((item) => item.quantity).join(", ") || "asd"}
               </td>
               <td className="py-3 px-6 text-left">
-                {invoice.items.map((item) => item.description).join(", ")}
+                {invoice && invoice.items.map((item) => item.description).join(", ") || "asd"}
               </td>
               <td className="py-3 px-6 text-left">
-                {invoice.items.map((item) => item.weight).join(", ")}
+                {invoice && invoice.items.map((item) => item.weight).join(", ") || "asd"}
               </td>
               <td className="py-3 px-6 text-left">
-                {invoice.items.map((item) => item.rate).join(", ")}
+                {invoice && invoice.items.map((item) => item.rate).join(", ") || "asd"}
               </td>
               <td className="py-3 px-6 text-left">
-                {invoice.items.map((item) => item.total).join(", ")}
+                {invoice && invoice.items.map((item) => item.total).join(", ") || "asd"}
               </td>
               {/* <td className="py-3 px-6 text-left">{invoice.invoiceNumber}</td>
               <td className="py-3 px-6 text-left">{invoice.partyName}</td> */}
@@ -129,7 +173,7 @@ const PurchaseInvoiceList = () => {
                     <Trash2 size={16} />
                   </button>
                   <button
-                    onClick={() => handlePrint(invoice)}
+                    onClick={() => openPrintableInvoice(invoice)}
                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                   >
                     <Printer size={16} />
@@ -137,7 +181,7 @@ const PurchaseInvoiceList = () => {
                 </div>
               </td>
             </tr>
-          ))}
+          )) || "No invoices available"}
         </tbody>
       </table>
       <div className="flex justify-center mt-4">

@@ -1,23 +1,35 @@
 import React from "react";
 
-const PrintableInvoicePage = ({ invoiceData }) => {
-  console.log(invoiceData);
+const PrintableInvoice = ({ invoiceData }) => {
+  console.log("Received invoiceData in PrintableInvoice:", invoiceData);
+
+  if (!invoiceData) {
+    console.error("No invoice data received");
+    return <div>Error: No invoice data available</div>;
+  }
+
+  if (!invoiceData.items || !Array.isArray(invoiceData.items)) {
+    console.error("Invalid or missing items in invoice data");
+    return <div>Error: Invalid invoice data structure</div>;
+  }
+
   return (
     <div className="w-[210mm] min-h-[297mm] p-8 bg-white text-black mx-auto">
       <div className="text-2xl font-bold mb-4">Invoice</div>
       <div className="flex justify-between mb-6 w-full">
-        <div>
-          <div className="flex gap-10 mb-10 !w-[80%]">
+        <div className="w-full">
+          <div className="flex justify-between mb-10 w-full">
             <p>
               <span className="font-semibold">Invoice No:</span>{" "}
-              {invoiceData.billNo}
+              {invoiceData.billNo || 'N/A'}
             </p>
             <p>
-              <span className="font-semibold">Date:</span> {invoiceData.date}
+              <span className="font-semibold">Date:</span>{" "}
+              {new Date(invoiceData.date).toLocaleDateString()}
             </p>
             <p>
               <span className="font-semibold">Party Name:</span>{" "}
-              {invoiceData.customerName}
+              {invoiceData.customerName || 'N/A'}
             </p>
           </div>
           <table className="w-full mb-6">
@@ -31,13 +43,13 @@ const PrintableInvoicePage = ({ invoiceData }) => {
               </tr>
             </thead>
             <tbody>
-              {invoiceData.products.map((product, index) => (
+              {invoiceData.items.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
-                  <td className="py-2">{product.description}</td>
-                  <td className="text-right py-2">{product.quantity}</td>
-                  <td className="text-right py-2">{product.Unit}</td>
-                  <td className="text-right py-2">{product.rate}</td>
-                  <td className="text-right py-2">{product.total}</td>
+                  <td className="py-2">{item.description || 'N/A'}</td>
+                  <td className="text-right py-2">{item.quantity || 'N/A'}</td>
+                  <td className="text-right py-2">{item.unit || 'N/A'}</td>
+                  <td className="text-right py-2">{item.rate || 'N/A'}</td>
+                  <td className="text-right py-2">{item.total || 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
@@ -45,19 +57,19 @@ const PrintableInvoicePage = ({ invoiceData }) => {
         </div>
       </div>
 
-      <div className="flex justify-end mr-10">
+      <div className="flex justify-end">
         <div className="w-1/2">
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Total:</span>
-            <span>{invoiceData.netAmount}</span>
+            <span>{invoiceData.grandTotal || 'N/A'}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Previous Balance:</span>
-            <span>{invoiceData.previousBalance}</span>
+            <span>{invoiceData.previousBalance || 'N/A'}</span>
           </div>
           <div className="flex justify-between font-bold text-lg">
             <span>Grand Total:</span>
-            <span>{invoiceData.grandTotal}</span>
+            <span>{invoiceData.grandTotal || 'N/A'}</span>
           </div>
         </div>
       </div>
@@ -65,4 +77,4 @@ const PrintableInvoicePage = ({ invoiceData }) => {
   );
 };
 
-export default PrintableInvoicePage;
+export default PrintableInvoice;

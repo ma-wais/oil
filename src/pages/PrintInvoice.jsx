@@ -31,7 +31,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
               </tr>
             </thead>
             <tbody>
-              {invoiceData.products.map((product, index) => (
+              {invoiceData?.products.map((product, index) => (
                 <tr key={index} className="border-b border-gray-200">
                   <td className="py-2">{product.description}</td>
                   <td className="text-right py-2">{product.quantity}</td>
