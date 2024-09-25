@@ -20,6 +20,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import LedgerPage from "./pages/Ledger";
 import Ledger from "./pages/SaleorPurchaseLedger";
 import PartyLedger from "./pages/PartyLedger";
+import TotalBalance from "./pages/Totals";
 
 // export const server = "http://localhost:5000/api";
 export const server = "https://oil-api-grn9.onrender.com/api"
@@ -78,6 +79,7 @@ function App() {
           <Route path="/contactledger" element={<LedgerPage />} />
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/party" element={<PartyLedger />} />
+          <Route path="/totals" element={<TotalBalance />} />
 
         </Route>
 

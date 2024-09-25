@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { server } from "../App";
+import PrintableInvoice from "./PrintInvoicesale";
+import ReactDOM from 'react-dom';
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
@@ -23,6 +25,7 @@ function ProductTable() {
   const [receivedCash, setReceivedCash] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
   const [contacts, setContacts] = useState([]);
+  const [showPrintableInvoice, setShowPrintableInvoice] = useState(false);
 
   useEffect(() => {
     const { quantity, rate } = productDetails;
@@ -46,9 +49,21 @@ function ProductTable() {
   }, [products, invoiceDetails.previousBalance, receivedCash]);
 
   useEffect(() => {
+    fetchNextBillNo();
     fetchContacts();
   }, []);
 
+  const fetchNextBillNo = async () => {
+    try {
+      const response = await axios.get(`${server}/purchase/nextBillNo`);
+      setInvoiceDetails(prevDetails => ({
+        ...prevDetails,
+        billNo: response.data.nextBillNo
+      }));
+    } catch (error) {
+      console.error("Error fetching next bill number:", error);
+    }
+  };
   const fetchContacts = async () => {
     try {
       const response = await axios.get(`${server}/contact?type=${"customer"}`);
@@ -71,6 +86,21 @@ function ProductTable() {
       total: "",
     });
     setSelectedOption(null);
+  };
+
+  const openPrintableInvoice = (invoiceData) => {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write('<html><head><title>Print Invoice</title>');
+    printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<div id="print-root"></div>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+  
+    ReactDOM.render(
+      <PrintableInvoice invoiceData={invoiceData} />,
+      printWindow.document.getElementById('print-root')
+    );
   };
 
   const deleteProduct = (id) => {
@@ -97,7 +127,10 @@ function ProductTable() {
         customerName: "",
         previousBalance: "",
       });
+      openPrintableInvoice(data);
+      setShowPrintableInvoice(true);
       setProducts([]);
+      fetchNextBillNo();
     } catch (error) {
       console.error(error);
       alert("Error creating invoice");
@@ -292,6 +325,16 @@ function ProductTable() {
           Submit
         </button>
       </div>
+      {showPrintableInvoice && (
+        <PrintableInvoice
+          invoiceData={{
+            ...invoiceDetails,
+            products,
+            netAmount,
+            grandTotal,
+          }}
+        />
+      )}
     </div>
   );
 }
