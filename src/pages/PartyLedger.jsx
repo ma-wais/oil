@@ -32,6 +32,10 @@ const PartyLedger = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    if (!dateFrom || !dateTo || !name) {
+      alert("Please select all date fields");
+      return;
+    }
     navigate("/party-ledger-results", { state: { dateFrom, dateTo, partyName: name } });
   };
 

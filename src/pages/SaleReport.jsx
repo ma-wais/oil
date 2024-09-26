@@ -113,12 +113,12 @@ const SalesReport = () => {
 
       {reportData.length > 0 && (
         <>
-          <button
+          {/* <button
             onClick={handlePrint}
             className="mb-4 bg-green-500 text-white p-2 rounded hover:bg-green-600 flex items-center"
           >
             <Printer size={16} className="mr-2" /> Print Report
-          </button>
+          </button> */}
           <table className="min-w-full bg-white">
             <thead>
               <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">

@@ -32,7 +32,7 @@ const Ledger = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!dateFrom || !dateTo) {
+    if (!dateFrom || !dateTo || !name) {
       alert("Please select all date fields");
       return;
     }
