@@ -93,24 +93,57 @@ const LedgerResults = () => {
   const [ledgerRecords, setLedgerRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [previousBalance, setPreviousBalance] = useState(0);
   const { state } = useLocation();
   const { dateFrom, dateTo, customerName } = state || {};
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [saleResponse, ledgerResponse] = await Promise.all([
+        const [
+          saleResponse,
+          ledgerResponse,
+          prevSaleResponse,
+          prevLedgerResponse,
+        ] = await Promise.all([
           axios.get(`${server}/sale`, {
             params: { dateFrom, dateTo, customerName },
           }),
           axios.get(`${server}/ledgerrecords`, {
             params: { dateFrom, dateTo, customerName },
           }),
+          axios.get(`${server}/sale`, {
+            params: { dateTo: dateFrom, customerName },
+          }),
+          axios.get(`${server}/ledgerrecords`, {
+            params: { dateTo: dateFrom, customerName },
+          }),
         ]);
 
-        setSaleData(saleResponse.data);
-        setLedgerRecords(ledgerResponse.data);
-        console.log(dateFrom, dateTo, customerName);
+        const sales = saleResponse.data;
+        const ledgers = ledgerResponse.data;
+        const prevSales = prevSaleResponse.data;
+        const prevLedgers = prevLedgerResponse.data;
+
+        setSaleData(sales);
+        setLedgerRecords(ledgers);
+
+        const previousSalesTotal = prevSales.reduce(
+          (sum, sale) => sum + (sale.grandTotal || 0),
+          0
+        );
+        const previousLedgersTotal = prevLedgers.reduce(
+          (sum, record) => sum + (record.amount || 0),
+          0
+        );
+        const calculatedPreviousBalance =
+          previousSalesTotal - previousLedgersTotal;
+
+        setPreviousBalance(calculatedPreviousBalance);
+
+        console.log("Previous Sales Total:", previousSalesTotal);
+        console.log("Previous Ledgers Total:", previousLedgersTotal);
+        console.log("Calculated Previous Balance:", calculatedPreviousBalance);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");
@@ -125,92 +158,127 @@ const LedgerResults = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  const saleTotal = saleData.reduce(
-    (sum, sale) => sum + (sale.grandTotal || 0),
-    0
+  const allEntries = [...saleData, ...ledgerRecords].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
   );
-  const ledgerTotal = ledgerRecords.reduce(
-    (sum, record) => sum + (record.amount || 0),
-    0
-  );
-  const grandTotal = saleTotal + ledgerTotal;
+
+  let runningBalance = previousBalance;
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Ledger Results</h2>
-      <h3 className="text-xl font-semibold mt-6 mb-2">Sale Invoices</h3>
-      <p>
+      <div className="flex justify-between">
+        <h2 className="text-2xl my-4">Company Name</h2>
+        <h4 className="text-2xl font-bold my-4">Customer Ledger</h4>
+      </div>
+      <p className="ml-[60%] text-right">
         <b>From</b> {dateFrom} <b>to</b> {dateTo}
       </p>
-      {/* display current date and time */}
-      <p>
+      {/* Display current date and time */}
+      <p className="ml-[60%] text-right">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
         {new Date().toLocaleTimeString()} <br />
-
-        <b>Customer Name:</b>{" "} {customerName || "N/A"}
       </p>
+      <p>
+        <b>Customer Name:</b> {customerName || "N/A"}
+      </p>
+
+      {/* Ledger Table */}
       <table className="table-auto w-full mt-5">
         <thead>
           <tr>
+            <th className="border bg-slate-200 px-4 py-2">#</th>
             <th className="border bg-slate-200 px-4 py-2">Date</th>
             <th className="border bg-slate-200 px-4 py-2">Bill No</th>
             <th className="border bg-slate-200 px-4 py-2">Entry</th>
             <th className="border bg-slate-200 px-4 py-2">Description</th>
-            <th className="border bg-slate-200 px-4 py-2">Wasool</th>
             <th className="border bg-slate-200 px-4 py-2">Name</th>
-            {/* <th className="border bg-slate-200 px-4 py-2">Total Amount</th> */}
-            <th className="border bg-slate-200 px-4 py-2">Grand Total</th>
+            <th className="border bg-slate-200 px-4 py-2">Banam</th>
+            <th className="border bg-slate-200 px-4 py-2">Jama</th>
+            <th className="border bg-slate-200 px-4 py-2">Remaining</th>
           </tr>
-        </thead>
-        <tbody>
-          {saleData.map((sale) => (
-            <tr key={sale._id}>
-              <td className="border px-4 py-2">
-                {new Date(sale.date).toLocaleDateString()}
-              </td>
-              <td className="border px-4 py-2">{sale.billNo}</td>
-              <th className="border px-4 py-2">Debits</th>
-              <th className="border px-4 py-2">{sale.items[0]?.description}</th>
-              <td className="border px-4 py-2">{sale.receivedCash}</td>
-              <td className="border px-4 py-2">{sale.customerName}</td>
-              {/* <td className="border px-4 py-2">{sale.totalAmount}</td> */}
-              <td className="border px-4 py-2">{sale.grandTotal}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h3 className="text-xl font-semibold mt-6 mb-2">Ledger Records</h3>
-      <table className="table-auto w-full">
-        <thead>
           <tr>
-            <th className="px-4 py-2 border bg-slate-200">Date</th>
-            <th className="px-4 py-2 border bg-slate-200">Customer</th>
-            <th className="px-4 py-2 border bg-slate-200">Entry</th>
-            <th className="px-4 py-2 border bg-slate-200">Description</th>
-            <th className="px-4 py-2 border bg-slate-200">Amount</th>
+            <th className="border px-4 py-2 text-right" colSpan={7}>
+              Previous
+            </th>
+            <th className="border px-4 py-2" colSpan={2}>
+              {previousBalance}
+            </th>
           </tr>
         </thead>
         <tbody>
-          {ledgerRecords.map((record) => (
-            <tr key={record._id}>
-              <td className="border px-4 py-2">
-                {new Date(record.date).toLocaleDateString()}
-              </td>
-              <td className="border px-4 py-2">{record.contactName}</td>
-              <th className="border px-4 py-2">Credits</th>
-              <td className="border px-4 py-2">{record.description}</td>
-              <td className="border px-4 py-2">{record.amount}</td>
-            </tr>
-          ))}
+          {allEntries.map((entry, index) => {
+            const isSale = "grandTotal" in entry;
+            const amount = isSale ? entry.grandTotal : -entry.amount;
+            runningBalance += amount;
+
+            return (
+              <tr key={entry._id}>
+                <td className="border px-4 py-2">{index + 1}</td>
+                <td className="border px-4 py-2">
+                  {new Date(entry.date).toLocaleDateString()}
+                </td>
+                <td className="border px-4 py-2">{entry.billNo}</td>
+                <td className="border px-4 py-2">
+                  {isSale ? "Banam Bill" : "Jama"}
+                </td>
+                <td className="border px-4 py-2">
+                  {entry.description ||
+                    (entry.items && entry.items[0]?.description)}
+                </td>
+                <td className="border px-4 py-2">
+                  {entry.customerName || entry.contactName}
+                </td>
+                <td className="border px-4 py-2">
+                  {isSale ? entry.grandTotal.toFixed(2) : "0.00"}
+                </td>
+                <td className="border px-4 py-2">
+                  {!isSale ? entry.amount.toFixed(2) : "0.00"}
+                </td>
+                <td className="border px-4 py-2">
+                  {runningBalance.toFixed(2)}
+                </td>
+              </tr>
+            );
+          })}
+
+          <tr className="border px-4 py-2 font-bold text-right" colspan={9}>
+            {" "}
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 font-bold text-right" colSpan={6}>
+              Total
+            </td>
+            <td className="border px-4 py-2 font-bold">
+              {saleData.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0)}
+            </td>
+            <td className="border px-4 py-2 font-bold">
+              {ledgerRecords.reduce(
+                (sum, record) => sum + (record.amount || 0),
+                0
+              )}
+            </td>
+          </tr>
+          <tr colspan={9}></tr>
+          <tr>
+            <td colspan={8} className="border bg-slate-200 px-4 py-2 font-bold">
+              Current Balance
+            </td>
+            <td rowSpan={1} className="border bg-slate-200 px-4 py-2 font-bold">
+              {runningBalance.toFixed(2)}
+            </td>
+          </tr>
         </tbody>
       </table>
 
-      <div className="mt-6">
-        <p className="font-bold">Total Sales: {saleTotal}</p>
-        <p className="font-bold">Total Ledger: {ledgerTotal}</p>
-        <p className="font-bold text-xl">Grand Total: {grandTotal}</p>
-      </div>
+      {/* Summary */}
+      {/* <div className="mt-6">
+        <p className="font-bold">
+          Total Ledger:{" "}
+          {ledgerRecords.reduce((sum, record) => sum + (record.amount || 0), 0)}
+        </p>
+        <p className="font-bold text-xl">Grand Total: {runningBalance}</p>{" "}
+        {/* Display final running balance */}
+      {/* </div> */}
     </div>
   );
 };
