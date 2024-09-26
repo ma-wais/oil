@@ -32,7 +32,13 @@ const Ledger = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate("/ledger-results", { state: { dateFrom, dateTo, customerName: name } });
+    if (!dateFrom || !dateTo) {
+      alert("Please select all date fields");
+      return;
+    }
+    navigate("/ledger-results", {
+      state: { dateFrom, dateTo, customerName: name },
+    });
   };
 
   return (
@@ -104,6 +110,7 @@ const LedgerResults = () => {
 
         setSaleData(saleResponse.data);
         setLedgerRecords(ledgerResponse.data);
+        console.log(dateFrom, dateTo, customerName);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");
@@ -118,34 +125,55 @@ const LedgerResults = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  const saleTotal = saleData.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0);
-  const ledgerTotal = ledgerRecords.reduce((sum, record) => sum + (record.amount || 0), 0);
+  const saleTotal = saleData.reduce(
+    (sum, sale) => sum + (sale.grandTotal || 0),
+    0
+  );
+  const ledgerTotal = ledgerRecords.reduce(
+    (sum, record) => sum + (record.amount || 0),
+    0
+  );
   const grandTotal = saleTotal + ledgerTotal;
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Ledger Results</h2>
-      
       <h3 className="text-xl font-semibold mt-6 mb-2">Sale Invoices</h3>
-      <table className="table-auto w-full">
+      <p>
+        <b>From</b> {dateFrom} <b>to</b> {dateTo}
+      </p>
+      {/* display current date and time */}
+      <p>
+        <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
+        {new Date().toLocaleTimeString()} <br />
+
+        <b>Customer Name:</b>{" "} {customerName || "N/A"}
+      </p>
+      <table className="table-auto w-full mt-5">
         <thead>
           <tr>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Bill No</th>
-            <th className="px-4 py-2">Wasool</th>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Total Amount</th>
-            <th className="px-4 py-2">Grand Total</th>
+            <th className="border bg-slate-200 px-4 py-2">Date</th>
+            <th className="border bg-slate-200 px-4 py-2">Bill No</th>
+            <th className="border bg-slate-200 px-4 py-2">Entry</th>
+            <th className="border bg-slate-200 px-4 py-2">Description</th>
+            <th className="border bg-slate-200 px-4 py-2">Wasool</th>
+            <th className="border bg-slate-200 px-4 py-2">Name</th>
+            {/* <th className="border bg-slate-200 px-4 py-2">Total Amount</th> */}
+            <th className="border bg-slate-200 px-4 py-2">Grand Total</th>
           </tr>
         </thead>
         <tbody>
           {saleData.map((sale) => (
             <tr key={sale._id}>
-              <td className="border px-4 py-2">{new Date(sale.date).toLocaleDateString()}</td>
+              <td className="border px-4 py-2">
+                {new Date(sale.date).toLocaleDateString()}
+              </td>
               <td className="border px-4 py-2">{sale.billNo}</td>
+              <th className="border px-4 py-2">Debits</th>
+              <th className="border px-4 py-2">{sale.items[0]?.description}</th>
               <td className="border px-4 py-2">{sale.receivedCash}</td>
               <td className="border px-4 py-2">{sale.customerName}</td>
-              <td className="border px-4 py-2">{sale.totalAmount}</td>
+              {/* <td className="border px-4 py-2">{sale.totalAmount}</td> */}
               <td className="border px-4 py-2">{sale.grandTotal}</td>
             </tr>
           ))}
@@ -156,15 +184,21 @@ const LedgerResults = () => {
       <table className="table-auto w-full">
         <thead>
           <tr>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Description</th>
-            <th className="px-4 py-2">Amount</th>
+            <th className="px-4 py-2 border bg-slate-200">Date</th>
+            <th className="px-4 py-2 border bg-slate-200">Customer</th>
+            <th className="px-4 py-2 border bg-slate-200">Entry</th>
+            <th className="px-4 py-2 border bg-slate-200">Description</th>
+            <th className="px-4 py-2 border bg-slate-200">Amount</th>
           </tr>
         </thead>
         <tbody>
           {ledgerRecords.map((record) => (
             <tr key={record._id}>
-              <td className="border px-4 py-2">{new Date(record.date).toLocaleDateString()}</td>
+              <td className="border px-4 py-2">
+                {new Date(record.date).toLocaleDateString()}
+              </td>
+              <td className="border px-4 py-2">{record.contactName}</td>
+              <th className="border px-4 py-2">Credits</th>
               <td className="border px-4 py-2">{record.description}</td>
               <td className="border px-4 py-2">{record.amount}</td>
             </tr>
