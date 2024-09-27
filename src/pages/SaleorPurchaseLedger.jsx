@@ -79,7 +79,7 @@ const Ledger = () => {
         </div>
         <button
           onClick={handleSearch}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
         >
           Search
         </button>
@@ -127,6 +127,7 @@ const LedgerResults = () => {
 
         setSaleData(sales);
         setLedgerRecords(ledgers);
+        console.log(sales);
 
         const previousSalesTotal = prevSales.reduce(
           (sum, sale) => sum + (sale.grandTotal || 0),
@@ -186,21 +187,21 @@ const LedgerResults = () => {
       <table className="table-auto w-full mt-5">
         <thead>
           <tr>
-            <th className="border bg-slate-200 px-4 py-2">#</th>
-            <th className="border bg-slate-200 px-4 py-2">Date</th>
-            <th className="border bg-slate-200 px-4 py-2">Bill No</th>
-            <th className="border bg-slate-200 px-4 py-2">Entry</th>
-            <th className="border bg-slate-200 px-4 py-2">Description</th>
-            <th className="border bg-slate-200 px-4 py-2">Name</th>
-            <th className="border bg-slate-200 px-4 py-2">Banam</th>
-            <th className="border bg-slate-200 px-4 py-2">Jama</th>
-            <th className="border bg-slate-200 px-4 py-2">Remaining</th>
+            <th className="border bg-slate-200 px-2 py-2">#</th>
+            <th className="border bg-slate-200 px-2 py-2">Date</th>
+            <th className="border bg-slate-200 px-2 py-1">Bill</th>
+            <th className="border bg-slate-200 px-2 py-2">Entry</th>
+            <th className="border bg-slate-200 px-2 py-2">Description</th>
+            {/* <th className="border bg-slate-200 px-2 py-2">Name</th> */}
+            <th className="border bg-slate-200 px-2 py-2">Banam</th>
+            <th className="border bg-slate-200 px-2 py-2">Jama</th>
+            <th className="border bg-slate-200 py-2">Remaining</th>
           </tr>
           <tr>
-            <th className="border px-4 py-2 text-right" colSpan={7}>
+            <th className="border px-2 py-2 text-right" colSpan={7}>
               Previous
             </th>
-            <th className="border px-4 py-2" colSpan={2}>
+            <th className="border px-2 py-2" colSpan={2}>
               {previousBalance}
             </th>
           </tr>
@@ -213,45 +214,56 @@ const LedgerResults = () => {
 
             return (
               <tr key={entry._id}>
-                <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-2 py-2">{index + 1}</td>
+                <td className="border px-1 py-2">
                   {new Date(entry.date).toLocaleDateString()}
                 </td>
-                <td className="border px-4 py-2">{entry.billNo}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-2 py-1">{entry.billNo}</td>
+                <td className="border px-2 py-2">
                   {isSale ? "Banam Bill" : "Jama"}
                 </td>
-                <td className="border px-4 py-2">
-                  {entry.description ||
-                    (entry.items && entry.items[0]?.description)}
+                <td
+                  className="border px-2 py-1"
+                  style={{ whiteSpace: "nowrap", fontSize: "12px" }}
+                >
+                  {entry.items &&
+                    entry.items.map((item, index) => (
+                      <span key={index}>
+                        {item.description}&nbsp;&nbsp;
+                        {item.quantity}&nbsp;&nbsp;
+                        {item.weight}&nbsp;@&nbsp;
+                        {item.total}
+                        {index < entry.items.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
                 </td>
-                <td className="border px-4 py-2">
+                {/* <td className="border px-2 py-2">
                   {entry.customerName || entry.contactName}
-                </td>
-                <td className="border px-4 py-2">
+                </td> */}
+                <td className="border px-2 py-2">
                   {isSale ? entry.grandTotal.toFixed(2) : "0.00"}
                 </td>
-                <td className="border px-4 py-2">
+                <td className="border px-2 py-2">
                   {!isSale ? entry.amount.toFixed(2) : "0.00"}
                 </td>
-                <td className="border px-4 py-2">
+                <td className="border px-2 py-2">
                   {runningBalance.toFixed(2)}
                 </td>
               </tr>
             );
           })}
 
-          <tr className="border px-4 py-2 font-bold text-right" colspan={9}>
+          <tr className="border px-2 py-2 font-bold text-right" colspan={9}>
             {" "}
           </tr>
           <tr>
-            <td className="border px-4 py-2 font-bold text-right" colSpan={6}>
+            <td className="border px-2 py-2 font-bold text-right" colSpan={5}>
               Total
             </td>
-            <td className="border px-4 py-2 font-bold">
+            <td className="border px-2 py-2 font-bold">
               {saleData.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0)}
             </td>
-            <td className="border px-4 py-2 font-bold">
+            <td className="border px-2 py-2 font-bold">
               {ledgerRecords.reduce(
                 (sum, record) => sum + (record.amount || 0),
                 0
@@ -260,25 +272,15 @@ const LedgerResults = () => {
           </tr>
           <tr colspan={9}></tr>
           <tr>
-            <td colspan={8} className="border bg-slate-200 px-4 py-2 font-bold">
+            <td colspan={7} className="border bg-slate-200 px-2 py-2 font-bold">
               Current Balance
             </td>
-            <td rowSpan={1} className="border bg-slate-200 px-4 py-2 font-bold">
+            <td rowSpan={1} className="border bg-slate-200 px-2 py-2 font-bold">
               {runningBalance.toFixed(2)}
             </td>
           </tr>
         </tbody>
       </table>
-
-      {/* Summary */}
-      {/* <div className="mt-6">
-        <p className="font-bold">
-          Total Ledger:{" "}
-          {ledgerRecords.reduce((sum, record) => sum + (record.amount || 0), 0)}
-        </p>
-        <p className="font-bold text-xl">Grand Total: {runningBalance}</p>{" "}
-        {/* Display final running balance */}
-      {/* </div> */}
     </div>
   );
 };

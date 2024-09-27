@@ -10,12 +10,13 @@ const ContactManagement = () => {
   const [name, setName] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [amount, setAmount] = useState(0);
-  const [billNo, setBillNo] = useState("");
+  const [billNo, setBillNo] = useState();
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
     fetchAllContacts();
+    fetchNextBillNo();
   }, []);
 
   const fetchAllContacts = async () => {
@@ -65,6 +66,16 @@ const ContactManagement = () => {
     }
   };
 
+  const fetchNextBillNo = async () => {
+    try {
+      const response = await axios.get(`${server}/purchase/nextBillNo`);
+      setBillNo(response.data.nextBillNo)
+      console.log(response.data.nextBillNo);
+    } catch (error) {
+      console.error("Error fetching next bill number:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Contact Management</h1>
@@ -101,6 +112,7 @@ const ContactManagement = () => {
           <input
             type="text"
             placeholder="Bill No"
+            value={billNo}
             onChange={(e) => setBillNo(e.target.value)}
             className="border p-2 rounded mr-2 w-[400px]"
           />
