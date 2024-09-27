@@ -36,7 +36,9 @@ const PartyLedger = () => {
       alert("Please select all date fields");
       return;
     }
-    navigate("/party-ledger-results", { state: { dateFrom, dateTo, partyName: name } });
+    navigate("/party-ledger-results", {
+      state: { dateFrom, dateTo, partyName: name },
+    });
   };
 
   return (
@@ -189,13 +191,12 @@ const PartyLedgerResults = () => {
             <th className="border bg-slate-200 px-4 py-2">Bill No</th>
             <th className="border bg-slate-200 px-4 py-2">Entry</th>
             <th className="border bg-slate-200 px-4 py-2">Description</th>
-            <th className="border bg-slate-200 px-4 py-2">Name</th>
             <th className="border bg-slate-200 px-4 py-2">Jama</th>
             <th className="border bg-slate-200 px-4 py-2">Banam</th>
             <th className="border bg-slate-200 px-4 py-2">Remaining</th>
           </tr>
           <tr>
-            <th className="border px-4 py-2 text-right" colSpan={7}>
+            <th className="border px-4 py-2 text-right" colSpan={6}>
               Previous
             </th>
             <th className="border px-4 py-2" colSpan={2}>
@@ -220,11 +221,16 @@ const PartyLedgerResults = () => {
                   {isSale ? "Jama" : "Banam Bill"}
                 </td>
                 <td className="border px-4 py-2">
-                  {entry.description ||
-                    (entry.items && entry.items[0]?.description)}
-                </td>
-                <td className="border px-4 py-2">
-                  {entry.customerName || entry.contactName}
+                  {entry.items &&
+                    entry.items.map((item, index) => (
+                      <span key={index}>
+                        {item.description}&nbsp;&nbsp;
+                        {item.quantity}&nbsp;&nbsp;
+                        {item.weight}&nbsp;@&nbsp;
+                        {item.total}
+                        {index < entry.items.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
                 </td>
                 <td className="border px-4 py-2">
                   {isSale ? entry.grandTotal.toFixed(2) : "0.00"}
@@ -243,7 +249,7 @@ const PartyLedgerResults = () => {
             {" "}
           </tr>
           <tr>
-            <td className="border px-4 py-2 font-bold text-right" colSpan={6}>
+            <td className="border px-4 py-2 font-bold text-right" colSpan={5}>
               Total
             </td>
             <td className="border px-4 py-2 font-bold">
@@ -258,7 +264,7 @@ const PartyLedgerResults = () => {
           </tr>
           <tr colspan={9}></tr>
           <tr>
-            <td colspan={8} className="border bg-slate-200 px-4 py-2 font-bold">
+            <td colspan={7} className="border bg-slate-200 px-4 py-2 font-bold">
               Current Balance
             </td>
             <td rowSpan={1} className="border bg-slate-200 px-4 py-2 font-bold">
