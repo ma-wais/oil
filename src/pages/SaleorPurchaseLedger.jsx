@@ -230,8 +230,8 @@ const LedgerResults = () => {
                     entry.items.map((item, index) => (
                       <span key={index}>
                         {item.description}&nbsp;&nbsp;
-                        {item.quantity}&nbsp;&nbsp;
-                        {item.weight}&nbsp;@&nbsp;
+                        {item.quantity}&nbsp;
+                        {item.weight}&nbsp;{item.rate}@&nbsp;
                         {item.total}
                         {index < entry.items.length - 1 ? ", " : ""}
                       </span>

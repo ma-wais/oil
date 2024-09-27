@@ -226,8 +226,7 @@ const PartyLedgerResults = () => {
                       <span key={index}>
                         {item.description}&nbsp;&nbsp;
                         {item.quantity}&nbsp;&nbsp;
-                        {item.weight}&nbsp;@&nbsp;
-                        {item.total}
+                        {item.weight}&nbsp;{item.rate}@&nbsp; {item.total}
                         {index < entry.items.length - 1 ? ", " : ""}
                       </span>
                     ))}
