@@ -50,7 +50,7 @@ const ContactManagement = () => {
     if (!selectedContact) return;
     try {
       await axios.put(`${server}/balance`, {
-        name: selectedContact.value,
+        name: selectedContact,
         amount: parseFloat(amount),
         billNo,
         date,
@@ -87,7 +87,10 @@ const ContactManagement = () => {
             value: c.name,
             label: `${c.name} (${c.type})`,
           }))}
-          onChange={setSelectedContact}
+          onChange={(e) => {
+            setSelectedContact(e.value);
+            console.log(selectedContact);
+          }}
           placeholder="Select contact to update balance"
           className="w-[400px]"
         />
