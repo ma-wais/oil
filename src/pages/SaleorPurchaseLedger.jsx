@@ -106,29 +106,25 @@ const LedgerResults = () => {
           prevSaleResponse,
           prevLedgerResponse,
         ] = await Promise.all([
-          axios.get(`${server}/sale`, {
-            params: { dateFrom, dateTo, customerName },
-          }),
-          axios.get(`${server}/ledgerrecords`, {
-            params: { dateFrom, dateTo, customerName },
-          }),
-          axios.get(`${server}/sale`, {
-            params: { dateTo: dateFrom, customerName },
-          }),
-          axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: dateFrom, customerName },
-          }),
+          axios.get(`${server}/sale`, { params: { dateFrom, dateTo, customerName } }),
+          axios.get(`${server}/ledgerrecords`, { params: { dateFrom, dateTo, customerName } }),
+          axios.get(`${server}/sale`, { params: { dateTo: dateFrom, customerName } }),
+          axios.get(`${server}/ledgerrecords`, { params: { dateTo: dateFrom, customerName } }),
         ]);
-
+  
         const sales = saleResponse.data;
         const ledgers = ledgerResponse.data;
         const prevSales = prevSaleResponse.data;
         const prevLedgers = prevLedgerResponse.data;
-
+  
         setSaleData(sales);
         setLedgerRecords(ledgers);
-        console.log(sales);
-
+  
+        console.log("Sales:", sales);
+        console.log("Ledgers:", ledgers);
+        console.log("Previous Sales:", prevSales);
+        console.log("Previous Ledgers:", prevLedgers);
+  
         const previousSalesTotal = prevSales.reduce(
           (sum, sale) => sum + (sale.grandTotal || 0),
           0
@@ -139,9 +135,9 @@ const LedgerResults = () => {
         );
         const calculatedPreviousBalance =
           previousSalesTotal - previousLedgersTotal;
-
+  
         setPreviousBalance(calculatedPreviousBalance);
-
+  
         console.log("Previous Sales Total:", previousSalesTotal);
         console.log("Previous Ledgers Total:", previousLedgersTotal);
         console.log("Calculated Previous Balance:", calculatedPreviousBalance);
@@ -152,10 +148,10 @@ const LedgerResults = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [dateFrom, dateTo, customerName]);
-
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
