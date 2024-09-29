@@ -95,7 +95,7 @@ const PartyLedgerResults = () => {
   const [error, setError] = useState(null);
   const [previousBalance, setPreviousBalance] = useState(0);
   const { state } = useLocation();
-  const { dateFrom, dateTo, customerName } = state || {};
+  const { dateFrom, dateTo, partyName } = state || {};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,20 +107,21 @@ const PartyLedgerResults = () => {
           prevLedgerResponse,
         ] = await Promise.all([
           axios.get(`${server}/ledger`, {
-            params: { dateFrom, dateTo, customerName },
+            params: { dateFrom, dateTo, customerName: partyName },
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateFrom, dateTo, customerName },
+            params: { dateFrom, dateTo, customerName: partyName },
           }),
           axios.get(`${server}/sale`, {
-            params: { dateTo: dateFrom, customerName },
+            params: { dateTo: dateFrom, customerName: partyName },
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: dateFrom, customerName },
+            params: { dateTo: dateFrom, customerName: partyName },
           }),
         ]);
 
         const sales = saleResponse.data;
+        console.log(sales);
         const ledgers = ledgerResponse.data;
         const prevSales = prevSaleResponse.data;
         const prevLedgers = prevLedgerResponse.data;
@@ -153,7 +154,7 @@ const PartyLedgerResults = () => {
     };
 
     fetchData();
-  }, [dateFrom, dateTo, customerName]);
+  }, [dateFrom, dateTo, partyName]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -173,16 +174,14 @@ const PartyLedgerResults = () => {
       <p className="ml-[60%] text-right">
         <b>From</b> {dateFrom} <b>to</b> {dateTo}
       </p>
-      {/* Display current date and time */}
       <p className="ml-[60%] text-right">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
         {new Date().toLocaleTimeString()} <br />
       </p>
       <p>
-        <b>Party Name:</b> {customerName || "N/A"}
+        <b>Party Name:</b> {partyName || "N/A"}
       </p>
 
-      {/* Ledger Table */}
       <table className="table-auto w-full mt-5">
         <thead>
           <tr>
@@ -216,7 +215,7 @@ const PartyLedgerResults = () => {
                 <td className="border px-4 py-2">
                   {new Date(entry.date).toLocaleDateString()}
                 </td>
-                <td className="border px-4 py-2">{entry.billNo}</td>
+                <td className="border px-4 py-2">{entry.invoiceNumber}</td>
                 <td className="border px-4 py-2">
                   {isSale ? "Jama" : "Banam Bill"}
                 </td>
