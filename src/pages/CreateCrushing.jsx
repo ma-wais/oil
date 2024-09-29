@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Select from 'react-select';
 import { server } from "../App";
 
 const CreateCrushing = () => {
@@ -7,17 +8,33 @@ const CreateCrushing = () => {
   const [seedName, setSeedName] = useState("");
   const [crushingAmount, setCrushingAmount] = useState("");
   const [message, setMessage] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [selectedParty, setSelectedParty] = useState(null);
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(`${server}/contact?type=party`);
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!seedName || !crushingAmount || !date) return setMessage("Please fill all fields");
+    if(!seedName || !crushingAmount || !date || !selectedParty) return setMessage("Please fill all fields");
     try {
       const response = await axios.post(`${server}/crushings`, {
         date,
         seedName,
         crushingAmount,
+        partyName: selectedParty.value
       });
-      setMessage("Crushing recorded successfully");
+      setMessage("Crushing recorded successfully", response);
     } catch (error) {
       setMessage(error.response?.data?.message || "Error recording crushing");
     }
@@ -50,13 +67,25 @@ const CreateCrushing = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Crushing Amount (kg)</label>
+          <label className="block text-gray-700">Crushing Amount (mans)</label>
           <input
             type="number"
             value={crushingAmount}
             onChange={(e) => setCrushingAmount(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Enter amount in kg"
+            placeholder="Enter amount in mans"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Party Name</label>
+          <Select
+            options={contacts.map((c) => ({
+              value: c.name,
+              label: `${c.name} (Balance: ${c.openingDr})`
+            }))}
+            onChange={setSelectedParty}
+            value={selectedParty}
+            className="w-full"
           />
         </div>
         <button
