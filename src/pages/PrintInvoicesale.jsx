@@ -29,7 +29,7 @@ const PrintableInvoice = ({ invoiceData }) => {
             </p>
             <p>
               <span className="font-semibold">Party Name:</span>{" "}
-              {invoiceData.customerName || 'N/A'}
+              {invoiceData.partyName || 'N/A'}
             </p>
           </div>
           <table className="w-full mb-6">
@@ -47,7 +47,7 @@ const PrintableInvoice = ({ invoiceData }) => {
                 <tr key={index} className="border-b border-gray-200">
                   <td className="py-2">{item.description || 'N/A'}</td>
                   <td className="text-right py-2">{item.quantity || 'N/A'}</td>
-                  <td className="text-right py-2">{item.unit || 'N/A'}</td>
+                  <td className="text-right py-2">{item.weight || 'N/A'}</td>
                   <td className="text-right py-2">{item.rate || 'N/A'}</td>
                   <td className="text-right py-2">{item.total || 'N/A'}</td>
                 </tr>
@@ -61,7 +61,7 @@ const PrintableInvoice = ({ invoiceData }) => {
         <div className="w-1/2">
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Total:</span>
-            <span>{invoiceData.grandTotal || 'N/A'}</span>
+            <span>{invoiceData.totalAmount || 'N/A'}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Previous Balance:</span>
