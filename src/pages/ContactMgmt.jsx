@@ -16,7 +16,7 @@ const ContactManagement = () => {
 
   useEffect(() => {
     fetchAllContacts();
-    fetchNextBillNo();
+    fetchCurrentBillNo();
   }, []);
 
   const fetchAllContacts = async () => {
@@ -47,7 +47,10 @@ const ContactManagement = () => {
   };
 
   const handleUpdateBalance = async () => {
-    if (!selectedContact) return;
+    if (!selectedContact) return alert("Please select a contact");
+    const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
+    const nextBillNo = nextBillResponse.data.nextBillNo;
+    setBillNo(nextBillNo);
     try {
       await axios.put(`${server}/balance`, {
         name: selectedContact,
@@ -58,7 +61,6 @@ const ContactManagement = () => {
       });
       setAmount(0);
       setDescription("");
-      setBillNo("");
       setDate("");
       fetchAllContacts();
     } catch (error) {
@@ -66,13 +68,12 @@ const ContactManagement = () => {
     }
   };
 
-  const fetchNextBillNo = async () => {
+  const fetchCurrentBillNo = async () => {
     try {
-      const response = await axios.get(`${server}/purchase/nextBillNo`);
-      setBillNo(response.data.nextBillNo)
-      console.log(response.data.nextBillNo);
+      const response = await axios.get(`${server}/purchase/currentBillNo`);
+      setBillNo(response.data.currentBillNo);
     } catch (error) {
-      console.error("Error fetching next bill number:", error);
+      console.error("Error fetching current bill number:", error);
     }
   };
 
@@ -109,6 +110,7 @@ const ContactManagement = () => {
           <input
             type="text"
             placeholder="Description"
+            value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="border p-2 rounded mr-2 w-[400px]"
           />

@@ -49,21 +49,22 @@ function ProductTable() {
   }, [products, invoiceDetails.previousBalance, receivedCash]);
 
   useEffect(() => {
-    fetchNextBillNo();
+    fetchCurrentBillNo();
     fetchContacts();
   }, []);
 
-  const fetchNextBillNo = async () => {
+  const fetchCurrentBillNo = async () => {
     try {
-      const response = await axios.get(`${server}/purchase/nextBillNo`);
+      const response = await axios.get(`${server}/purchase/currentBillNo`);
       setInvoiceDetails(prevDetails => ({
         ...prevDetails,
-        billNo: response.data.nextBillNo
+        billNo: response.data.currentBillNo
       }));
     } catch (error) {
-      console.error("Error fetching next bill number:", error);
+      console.error("Error fetching current bill number:", error);
     }
   };
+
   const fetchContacts = async () => {
     try {
       const response = await axios.get(`${server}/contact?type=${"customer"}`);
@@ -85,7 +86,6 @@ function ProductTable() {
       rate: "",
       total: "",
     });
-    setSelectedOption(null);
   };
 
   const openPrintableInvoice = (invoiceData) => {
@@ -109,6 +109,13 @@ function ProductTable() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
+    const nextBillNo = nextBillResponse.data.nextBillNo;
+    setInvoiceDetails(prevDetails => ({
+      ...prevDetails,
+      billNo: nextBillNo
+    }))
     const data = {
       ...invoiceDetails,
       products,
@@ -116,21 +123,20 @@ function ProductTable() {
       receivedCash,
       grandTotal,
     };
-    console.log(data);
+    console.log("data", data);
     try {
       const response = await axios.post(`${server}/sales`, data);
       console.log(response.data);
       alert("Invoice created successfully");
+      openPrintableInvoice(data);
+      setShowPrintableInvoice(true);
       setInvoiceDetails({
-        billNo: "",
+        billNo: nextBillNo,
         date: "",
         customerName: "",
         previousBalance: "",
       });
-      openPrintableInvoice(data);
-      setShowPrintableInvoice(true);
       setProducts([]);
-      fetchNextBillNo();
     } catch (error) {
       console.error(error);
       alert("Error creating invoice");
@@ -291,6 +297,7 @@ function ProductTable() {
             type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
             value={netAmount}
+            readOnly
           />
         </div>
         <div>
@@ -301,6 +308,7 @@ function ProductTable() {
             type="number"
             className="w-full p-2 border border-gray-300 rounded-md"
             value={invoiceDetails.previousBalance}
+            readOnly
           />
         </div>
         <div>

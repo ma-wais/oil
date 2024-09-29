@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp, Trash2, Printer } from "lucide-react";
 import { server } from "../App";
-import PrintableInvoice from "./PrintInvoicesale";
+import PrintableInvoice from "./PrintInvoice";
 import ReactDOM from "react-dom";
 
 const SalesInvoiceList = () => {
@@ -157,7 +157,7 @@ const SalesInvoiceList = () => {
               <td className="py-3 px-6 text-left">
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => handleDelete(invoice)}
+                    onClick={() => handleDelete(invoice._id)}
                     className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
                   >
                     <Trash2 size={16} />

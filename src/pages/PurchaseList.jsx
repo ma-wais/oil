@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp, Trash2, Printer } from "lucide-react";
 import { server } from "../App";
-import PrintableInvoice from "./PrintInvoicesale";
+import PrintableInvoice from "./PrintInvoice";
 import ReactDOM from "react-dom";
 
 const PurchaseInvoiceList = () => {

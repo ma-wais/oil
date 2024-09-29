@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { server } from "../App";
-import PrintableInvoice from "./PrintInvoice";
-import ReactDOM from 'react-dom';
+import PrintableInvoice from "./PrintInvoicesale";
+import ReactDOM from "react-dom";
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
@@ -33,7 +33,7 @@ function ProductTable() {
 
   useEffect(() => {
     fetchContacts();
-    fetchNextBillNo();
+    fetchCurrentBillNo();
   }, []);
 
   const fetchContacts = async () => {
@@ -45,15 +45,15 @@ function ProductTable() {
     }
   };
 
-  const fetchNextBillNo = async () => {
+  const fetchCurrentBillNo = async () => {
     try {
-      const response = await axios.get(`${server}/purchase/nextBillNo`);
-      setInvoiceDetails((prevDetails) => ({
+      const response = await axios.get(`${server}/purchase/currentBillNo`);
+      setInvoiceDetails(prevDetails => ({
         ...prevDetails,
-        billNo: response.data.nextBillNo,
+        billNo: response.data.currentBillNo
       }));
     } catch (error) {
-      console.error("Error fetching next bill number:", error);
+      console.error("Error fetching current bill number:", error);
     }
   };
 
@@ -86,7 +86,6 @@ function ProductTable() {
       rate: "",
       total: "",
     });
-    setSelectedOption(null);
   };
 
   const deleteProduct = (indexToDelete) => {
@@ -95,6 +94,12 @@ function ProductTable() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
+    const nextBillNo = nextBillResponse.data.nextBillNo;
+    setInvoiceDetails((prevDetails) => ({
+      ...prevDetails,
+      billNo: nextBillNo,
+    }));
     const data = {
       ...invoiceDetails,
       products,
@@ -128,20 +133,51 @@ function ProductTable() {
   };
 
   const openPrintableInvoice = (invoiceData) => {
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write('<html><head><title>Print Invoice</title>');
-    printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">');
-    printWindow.document.write('</head><body>');
-    printWindow.document.write('<div id="print-root"></div>');
-    printWindow.document.write('</body></html>');
+    console.log("Invoice data being passed to PrintableInvoice:", invoiceData);
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Invoice</title>
+          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        </head>
+        <body>
+          <div id="print-root"></div>
+          <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+          <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        </body>
+      </html>
+    `);
     printWindow.document.close();
-  
-    ReactDOM.render(
-      <PrintableInvoice invoiceData={invoiceData} />,
-      printWindow.document.getElementById('print-root')
-    );
+
+    const renderAndPrint = () => {
+      try {
+        ReactDOM.render(
+          <PrintableInvoice invoiceData={invoiceData} />,
+          printWindow.document.getElementById("print-root"),
+          () => {
+            console.log("PrintableInvoice rendered in new window");
+            printWindow.focus();
+            setTimeout(() => {
+              console.log("Attempting to print");
+              printWindow.print();
+            }, 1000);
+          }
+        );
+      } catch (error) {
+        console.error("Error rendering PrintableInvoice:", error);
+        printWindow.document.body.innerHTML = `<h1>Error rendering invoice: ${error.message}</h1>`;
+      }
+    };
+
+    if (printWindow.React && printWindow.ReactDOM) {
+      renderAndPrint();
+    } else {
+      printWindow.onload = renderAndPrint;
+    }
   };
-  
+
   const handleCustomerChange = (selectedOption) => {
     const selectedContact = contacts.find(
       (c) => c.name === selectedOption.value
