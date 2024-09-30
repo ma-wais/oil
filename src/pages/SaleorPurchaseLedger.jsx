@@ -275,6 +275,7 @@ const LedgerResults = () => {
                 <td
                   className="border px-2 py-1"
                   onClick={() => {isSale ? openPrintableInvoice(entry) : ""}}
+                  style={ isSale ? { cursor: "pointer" } : {cursor: "default"}}
                 >
                   {entry.billNo}
                 </td>

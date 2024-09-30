@@ -267,6 +267,7 @@ const PartyLedgerResults = () => {
                 <td
                   className="border px-4 py-2"
                   onClick={() => {isSale ? openPrintableInvoice(entry) : ""}}
+                  style={ isSale ? { cursor: "pointer" } : {cursor: "default"}}
                 >
                   {entry.invoiceNumber}
                 </td>
