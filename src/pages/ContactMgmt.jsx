@@ -13,6 +13,7 @@ const ContactManagement = () => {
   const [billNo, setBillNo] = useState();
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
+  const [updatedContact, setUpdatedContact] = useState(null);
 
   useEffect(() => {
     fetchAllContacts();
@@ -74,6 +75,35 @@ const ContactManagement = () => {
       setBillNo(response.data.currentBillNo);
     } catch (error) {
       console.error("Error fetching current bill number:", error);
+    }
+  };
+
+  const handleEdit = (contact) => {
+    setUpdatedContact(contact);
+    setName(contact.name);
+    setType(contact.type);
+  };
+
+  const handleDelete = async (contactId) => {
+    try {
+      await axios.delete(`${server}/contact/${contactId}`);
+      fetchAllContacts();
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const updateContact = { name, type };
+      await axios.put(
+        `${server}/contact/${updatedContact._id}`,
+        updateContact
+      );
+      fetchAllContacts();
+      setSelectedContact(null);
+    } catch (error) {
+      console.error("Error updating contact:", error);
     }
   };
 
@@ -178,12 +208,36 @@ const ContactManagement = () => {
         )}
       </div>
 
+      {updatedContact && (
+        <div>
+          <h3 className="text-lg font-semibold my-2">Edit Contact</h3>
+          <input
+            className="border p-2 rounded mr-2"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Name"
+          />
+          <select className="border p-2 rounded mr-2" value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="customer">Customer</option>
+            <option value="party">Party</option>
+          </select>
+          <button
+            onClick={handleUpdate}
+            className="bg-green-500 text-white p-2 rounded"
+          >
+            Update Contact
+          </button>
+        </div>
+      )}
+
       <table className="w-full border-collapse border border-gray-300 my-4">
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">Name</th>
             <th className="border border-gray-300 p-2">Type</th>
             <th className="border border-gray-300 p-2">Balance</th>
+            <th className="border border-gray-300 p-2">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -195,6 +249,20 @@ const ContactManagement = () => {
               </td>
               <td className="border border-gray-300 p-2">
                 {contact.openingDr || 0}
+              </td>
+              <td className="border border-gray-300 p-2">
+                <button
+                  onClick={() => handleEdit(contact)}
+                  className="mr-2 bg-blue-500 text-white p-1"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(contact._id)}
+                  className="bg-red-500 text-white p-1"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

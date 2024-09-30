@@ -315,7 +315,7 @@ const LedgerResults = () => {
                   {runningBalance.toFixed(2)}
                 </td>
                 <td className="border px-2 py-2">
-                  {runningBalance.toFixed(2) > 0 ? "Banam" : "Jama"}
+                  {runningBalance.toFixed(2) > 0 ? "Jama" : "Banam"}
                 </td>
               </tr>
             );
