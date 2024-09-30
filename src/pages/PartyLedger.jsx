@@ -3,6 +3,8 @@ import axios from "axios";
 import { server } from "../App";
 import Select from "react-select";
 import { useNavigate, useLocation } from "react-router-dom";
+import PrintableInvoice from "./PrintInvoice";
+import ReactDOM from "react-dom";
 
 const PartyLedger = () => {
   const [dateFrom, setDateFrom] = useState("");
@@ -165,6 +167,51 @@ const PartyLedgerResults = () => {
 
   let runningBalance = previousBalance;
 
+  const openPrintableInvoice = (invoiceData) => {
+    console.log("Invoice data being passed to PrintableInvoice:", invoiceData);
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Invoice</title>
+          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        </head>
+        <body>
+          <div id="print-root"></div>
+          <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+          <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    const renderAndPrint = () => {
+      try {
+        ReactDOM.render(
+          <PrintableInvoice invoiceData={invoiceData} />,
+          printWindow.document.getElementById('print-root'),
+          () => {
+            console.log("PrintableInvoice rendered in new window");
+            printWindow.focus();
+            setTimeout(() => {
+              console.log("Attempting to print");
+              printWindow.print();
+            }, 1000);
+          }
+        );
+      } catch (error) {
+        console.error("Error rendering PrintableInvoice:", error);
+        printWindow.document.body.innerHTML = `<h1>Error rendering invoice: ${error.message}</h1>`;
+      }
+    };
+
+    if (printWindow.React && printWindow.ReactDOM) {
+      renderAndPrint();
+    } else {
+      printWindow.onload = renderAndPrint;
+    }
+  };
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <div className="flex justify-between">
@@ -192,7 +239,9 @@ const PartyLedgerResults = () => {
             <th className="border bg-slate-200 px-4 py-2">Description</th>
             <th className="border bg-slate-200 px-4 py-2">Jama</th>
             <th className="border bg-slate-200 px-4 py-2">Banam</th>
-            <th className="border bg-slate-200 px-4 py-2">Remaining</th>
+            <th colSpan={2} className="border bg-slate-200 px-4 py-2">
+              Remaining
+            </th>
           </tr>
           <tr>
             <th className="border px-4 py-2 text-right" colSpan={6}>
@@ -215,7 +264,12 @@ const PartyLedgerResults = () => {
                 <td className="border px-4 py-2">
                   {new Date(entry.date).toLocaleDateString()}
                 </td>
-                <td className="border px-4 py-2">{entry.invoiceNumber}</td>
+                <td
+                  className="border px-4 py-2"
+                  onClick={() => {isSale ? openPrintableInvoice(entry) : ""}}
+                >
+                  {entry.invoiceNumber}
+                </td>
                 <td className="border px-4 py-2">
                   {isSale ? "Jama" : "Banam Bill"}
                 </td>
@@ -239,11 +293,14 @@ const PartyLedgerResults = () => {
                 <td className="border px-4 py-2">
                   {runningBalance.toFixed(2)}
                 </td>
+                <td className="border px-2 py-2">
+                  {runningBalance.toFixed(2) > 0 ? "Jama" : "Banam"}
+                </td>
               </tr>
             );
           })}
 
-          <tr className="border px-4 py-2 font-bold text-right" colspan={9}>
+          <tr className="border px-4 py-2 font-bold text-right" colSpan={9}>
             {" "}
           </tr>
           <tr>
@@ -262,7 +319,7 @@ const PartyLedgerResults = () => {
           </tr>
           <tr colspan={9}></tr>
           <tr>
-            <td colspan={7} className="border bg-slate-200 px-4 py-2 font-bold">
+            <td colspan={8} className="border bg-slate-200 px-4 py-2 font-bold">
               Current Balance
             </td>
             <td rowSpan={1} className="border bg-slate-200 px-4 py-2 font-bold">
@@ -271,16 +328,6 @@ const PartyLedgerResults = () => {
           </tr>
         </tbody>
       </table>
-
-      {/* Summary */}
-      {/* <div className="mt-6">
-        <p className="font-bold">
-          Total Ledger:{" "}
-          {ledgerRecords.reduce((sum, record) => sum + (record.amount || 0), 0)}
-        </p>
-        <p className="font-bold text-xl">Grand Total: {runningBalance}</p>{" "}
-        {/* Display final running balance */}
-      {/* </div> */}
     </div>
   );
 };
