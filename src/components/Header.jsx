@@ -36,6 +36,7 @@ const Header = ({ setToken, setUser }) => {
     stock: [
       { to: "/stock", label: "Stock" },
       { to: "/stock-update", label: "Stock Update" },
+      { to: "/stock-history", label: "Stock History" },
     ],
     stakeholders: [
       { to: "/contact", label: "Stakeholders" },

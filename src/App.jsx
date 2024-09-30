@@ -21,9 +21,10 @@ import LedgerPage from "./pages/Ledger";
 import { Ledger, LedgerResults } from "./pages/SaleorPurchaseLedger";
 import {PartyLedger, PartyLedgerResults} from "./pages/PartyLedger";
 import TotalBalance from "./pages/Totals";
+import StockHistory from "./pages/StockHIstory";
 
-// export const server = "http://localhost:5000/api";
-export const server = "https://oil-api-grn9.onrender.com/api"
+export const server = "http://localhost:5000/api";
+// export const server = "https://oil-api-grn9.onrender.com/api"
 
 function App() {
   const [user, setUser] = useState();
@@ -82,6 +83,8 @@ function App() {
           <Route path="/party" element={<PartyLedger />} />
           <Route path="/party-ledger-results" element={<PartyLedgerResults />} />
           <Route path="/totals" element={<TotalBalance />} />
+          <Route path="/stock-history" element={<StockHistory />} />
+
 
         </Route>
 
