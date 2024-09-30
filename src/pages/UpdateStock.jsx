@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { server } from '../App'; // Assuming `server` is already set up
+import { server } from '../App';
+import Select from 'react-select';
 
 const UpdateStock = ({  }) => {
   const [product, setProduct] = useState('');
   const [stockInKg, setStockInKg] = useState('');
   const [message, setMessage] = useState('');
+  const [selectedParty, setSelectedParty] = useState(null);
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(`${server}/contact?type=party`);
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.put(`${server}/stock/${product}`, {
         stockInKg,
+        partyName: selectedParty?.value,
       });
       setMessage('Stock updated successfully');
     } catch (error) {
@@ -35,6 +52,18 @@ const UpdateStock = ({  }) => {
             <option value="taramira">Taramira</option>
             <option value="banola">Banola</option>
           </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Party Name</label>
+          <Select
+            options={contacts.map((c) => ({
+              value: c.name,
+              label: `${c.name} (Balance: ${c.openingDr})`
+            }))}
+            onChange={setSelectedParty}
+            value={selectedParty}
+            className="w-full"
+          />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Stock to Add (kg)</label>

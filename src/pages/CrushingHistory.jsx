@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Select from 'react-select';
+// import Select from 'react-select';
 import { server } from '../App';
 
 const CrushingRecords = () => {
@@ -9,7 +9,7 @@ const CrushingRecords = () => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [contacts, setContacts] = useState([]);
-  const [selectedParty, setSelectedParty] = useState(null);
+  // const [selectedParty, setSelectedParty] = useState(null);
 
   useEffect(() => {
     fetchRecords();
@@ -31,7 +31,7 @@ const CrushingRecords = () => {
         params: { 
           dateFrom, 
           dateTo,
-          partyName: selectedParty ? selectedParty.value : ''
+          // partyName: selectedParty ? selectedParty.value : ''
         },
       });
       setRecords(response.data);
@@ -64,7 +64,7 @@ const CrushingRecords = () => {
           onChange={(e) => setDateTo(e.target.value)}
           className="border px-2 py-1 mr-4"
         />
-        <label className="mr-2">Party: </label>
+        {/* <label className="mr-2">Party: </label>
         <Select
           options={contacts.map((c) => ({
             value: c.name,
@@ -74,7 +74,7 @@ const CrushingRecords = () => {
           value={selectedParty}
           className="w-[200px] mr-4"
           isClearable
-        />
+        /> */}
         <button
           onClick={handleSearch}
           className="px-4 py-2 bg-blue-500 text-white rounded"
@@ -88,7 +88,7 @@ const CrushingRecords = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="border px-4 py-2">Date</th>
-              <th className="border px-4 py-2">Party Name</th>
+              {/* <th className="border px-4 py-2">Party Name</th> */}
               <th className="border px-4 py-2">Seed Name</th>
               <th className="border px-4 py-2">Crushing Amount (mans)</th>
               <th className="border px-4 py-2">Total Left (mans)</th>
@@ -99,7 +99,7 @@ const CrushingRecords = () => {
               records.map((record) => (
                 <tr key={record._id}>
                   <td className="border px-4 py-2">{new Date(record.date).toLocaleDateString()}</td>
-                  <td className="border px-4 py-2">{record.partyName}</td>
+                  {/* <td className="border px-4 py-2">{record.partyName}</td> */}
                   <td className="border px-4 py-2">{record.seedName}</td>
                   <td className="border px-4 py-2">{record.crushingAmount}</td>
                   <td className="border px-4 py-2">{record.totalLeft}</td>

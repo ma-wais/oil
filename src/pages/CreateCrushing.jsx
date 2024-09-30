@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Select from 'react-select';
+// import Select from 'react-select';
 import { server } from "../App";
 
 const CreateCrushing = () => {
@@ -8,31 +8,31 @@ const CreateCrushing = () => {
   const [seedName, setSeedName] = useState("");
   const [crushingAmount, setCrushingAmount] = useState("");
   const [message, setMessage] = useState("");
-  const [contacts, setContacts] = useState([]);
-  const [selectedParty, setSelectedParty] = useState(null);
+  // const [contacts, setContacts] = useState([]);
+  // const [selectedParty, setSelectedParty] = useState(null);
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+  // useEffect(() => {
+  //   fetchContacts();
+  // }, []);
 
-  const fetchContacts = async () => {
-    try {
-      const response = await axios.get(`${server}/contact?type=party`);
-      setContacts(response.data);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-    }
-  };
+  // const fetchContacts = async () => {
+  //   try {
+  //     const response = await axios.get(`${server}/contact?type=party`);
+  //     setContacts(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching contacts:", error);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!seedName || !crushingAmount || !date || !selectedParty) return setMessage("Please fill all fields");
+    if(!seedName || !crushingAmount || !date) return setMessage("Please fill all fields");
     try {
       const response = await axios.post(`${server}/crushings`, {
         date,
         seedName,
         crushingAmount,
-        partyName: selectedParty.value
+        // partyName: selectedParty.value
       });
       setMessage("Crushing recorded successfully", response);
     } catch (error) {
@@ -76,7 +76,7 @@ const CreateCrushing = () => {
             placeholder="Enter amount in mans"
           />
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-gray-700">Party Name</label>
           <Select
             options={contacts.map((c) => ({
@@ -87,7 +87,7 @@ const CreateCrushing = () => {
             value={selectedParty}
             className="w-full"
           />
-        </div>
+        </div> */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
