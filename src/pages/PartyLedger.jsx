@@ -252,7 +252,7 @@ const PartyLedgerResults = () => {
             </th>
           </tr>
           <tr>
-            <th className="border px-4 py-2 text-right" colSpan={6}>
+            <th className="border px-4 py-2 text-right" colSpan={7}>
               Previous
             </th>
             <th className="border px-4 py-2" colSpan={2}>
