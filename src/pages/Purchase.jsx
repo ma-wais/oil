@@ -48,9 +48,9 @@ function ProductTable() {
   const fetchCurrentBillNo = async () => {
     try {
       const response = await axios.get(`${server}/purchase/currentBillNo`);
-      setInvoiceDetails(prevDetails => ({
+      setInvoiceDetails((prevDetails) => ({
         ...prevDetails,
-        billNo: response.data.currentBillNo
+        billNo: response.data.currentBillNo,
       }));
     } catch (error) {
       console.error("Error fetching current bill number:", error);
@@ -74,7 +74,9 @@ function ProductTable() {
     const carRent = parseFloat(invoiceDetails.carRent) || 0;
     const newGrandTotal = productsTotal + carRent;
     setNetAmount(newGrandTotal.toFixed(2));
-    setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
+    setGrandTotal(
+      newGrandTotal + Number(invoiceDetails.previousBalance) 
+    );
   }, [products, invoiceDetails, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
@@ -310,7 +312,6 @@ function ProductTable() {
                       [label.toLowerCase().replace(" ", "")]: e.target.value,
                     })
                   }
-                  disabled={label === "Total"}
                 />
               </div>
             )
@@ -377,7 +378,7 @@ function ProductTable() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-          Gujar khan Weight
+            Gujar khan Weight
           </label>
           <input
             type="text"

@@ -44,9 +44,9 @@ function ProductTable() {
     const newGrandTotal = productsTotal;
     setNetAmount(newGrandTotal.toFixed(2));
     setGrandTotal(
-      Number(newGrandTotal) + Number(invoiceDetails.previousBalance)
+      Number(newGrandTotal) + Number(invoiceDetails.previousBalance) - receivedCash
     );
-  }, [products, invoiceDetails.previousBalance, receivedCash]);
+  }, [products, invoiceDetails.previousBalance, receivedCash ]);
 
   useEffect(() => {
     fetchCurrentBillNo();
@@ -313,7 +313,7 @@ function ProductTable() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Wasool
+            Receive
           </label>
           <input
             type="number"

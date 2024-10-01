@@ -102,6 +102,14 @@ const PartyLedgerResults = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const subtractOneDay = (dateString) => {
+          const date = new Date(dateString);
+          date.setDate(date.getDate() - 1);
+          return date.toISOString().split('T')[0];
+        };
+  
+        const previousDateTo = subtractOneDay(dateFrom);
+  
         const [
           saleResponse,
           ledgerResponse,
@@ -115,22 +123,22 @@ const PartyLedgerResults = () => {
             params: { dateFrom, dateTo, customerName: partyName },
           }),
           axios.get(`${server}/sale`, {
-            params: { dateTo: dateFrom, customerName: partyName },
+            params: { dateTo: previousDateTo, customerName: partyName }, // Subtract 1 day from dateFrom
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: dateFrom, customerName: partyName },
+            params: { dateTo: previousDateTo, customerName: partyName }, // Subtract 1 day from dateFrom
           }),
         ]);
-
+  
         const sales = saleResponse.data;
         console.log(sales);
         const ledgers = ledgerResponse.data;
         const prevSales = prevSaleResponse.data;
         const prevLedgers = prevLedgerResponse.data;
-
+  
         setSaleData(sales);
         setLedgerRecords(ledgers);
-
+  
         const previousSalesTotal = prevSales.reduce(
           (sum, sale) => sum + (sale.grandTotal || 0),
           0
@@ -141,9 +149,9 @@ const PartyLedgerResults = () => {
         );
         const calculatedPreviousBalance =
           previousSalesTotal - previousLedgersTotal;
-
+  
         setPreviousBalance(calculatedPreviousBalance);
-
+  
         console.log("Previous Sales Total:", previousSalesTotal);
         console.log("Previous Ledgers Total:", previousLedgersTotal);
         console.log("Calculated Previous Balance:", calculatedPreviousBalance);
@@ -154,10 +162,10 @@ const PartyLedgerResults = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [dateFrom, dateTo, partyName]);
-
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
