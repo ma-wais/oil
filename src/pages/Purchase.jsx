@@ -74,9 +74,7 @@ function ProductTable() {
     const carRent = parseFloat(invoiceDetails.carRent) || 0;
     const newGrandTotal = productsTotal + carRent;
     setNetAmount(newGrandTotal.toFixed(2));
-    setGrandTotal(
-      newGrandTotal + Number(invoiceDetails.previousBalance) 
-    );
+    setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
   }, [products, invoiceDetails, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
@@ -96,6 +94,10 @@ function ProductTable() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!invoiceDetails.date) {
+      alert("Please enter date");
+      return;
+    }
     const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
     const nextBillNo = nextBillResponse.data.nextBillNo;
     setInvoiceDetails((prevDetails) => ({
