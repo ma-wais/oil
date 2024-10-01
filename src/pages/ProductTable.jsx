@@ -9,14 +9,14 @@ function ProductTable() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
     description: "",
-    quantity: "",
+    quantity: 0,
     Unit: "",
-    rate: "",
-    total: "",
+    rate: 0,
+    total: 0,
   });
   const [selectedOption, setSelectedOption] = useState(null);
   const [invoiceDetails, setInvoiceDetails] = useState({
-    billNo: "",
+    billNo: 0,
     date: "",
     customerName: "",
     previousBalance: 0,
@@ -81,10 +81,10 @@ function ProductTable() {
     setProducts([...products, newProduct]);
     setProductDetails({
       description: "",
-      quantity: "",
+      quantity: 0,
       Unit: "",
-      rate: "",
-      total: "",
+      rate: 0,
+      total: 0,
     });
   };
 

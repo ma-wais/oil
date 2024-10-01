@@ -9,22 +9,22 @@ function ProductTable() {
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState({
     description: "",
-    quantity: "",
+    quantity: 0,
     Unit: "",
-    rate: "",
-    total: "",
+    rate: 0,
+    total: 0,
   });
   const [selectedOption, setSelectedOption] = useState(null);
   const [invoiceDetails, setInvoiceDetails] = useState({
-    billNo: "",
+    billNo: 0,
     date: "",
     customerName: "",
     carNo: "",
-    carRent: "",
-    gojarkhanWeight: "",
-    receivedWeight: "",
-    nag: "",
-    previousBalance: "",
+    carRent: 0,
+    gojarkhanWeight: 0,
+    receivedWeight: 0,
+    nag: 0,
+    previousBalance: 0,
   });
   const [netAmount, setNetAmount] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
@@ -83,10 +83,10 @@ function ProductTable() {
     setProducts([...products, productDetails]);
     setProductDetails({
       description: "",
-      quantity: "",
+      quantity: 0,
       Unit: "",
-      rate: "",
-      total: "",
+      rate: 0,
+      total: 0,
     });
   };
 
