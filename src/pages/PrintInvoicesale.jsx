@@ -25,7 +25,7 @@ const PrintableInvoice = ({ invoiceData }) => {
             </p>
             <p>
               <span className="font-semibold">Date:</span>{" "}
-              {new Date(invoiceData.date).toLocaleDateString()}
+              {invoiceData.date.slice(0, 10)}
             </p>
             <p>
               <span className="font-semibold">Party Name:</span>{" "}

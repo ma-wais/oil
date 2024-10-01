@@ -10,7 +10,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
           {invoiceData.billNo}
         </p>
         <p>
-          <span className="font-semibold">Date:</span> {invoiceData.date}
+          <span className="font-semibold">Date:</span> {invoiceData.date.slice(0, 10)}
         </p>
         <p>
           <span className="font-semibold">Party Name:</span>{" "}
@@ -76,6 +76,10 @@ const PrintableInvoicePage = ({ invoiceData }) => {
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Previous Balance:</span>
             <span>{invoiceData.previousBalance}</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="font-semibold">{invoiceData.receivedCash && "Received"}</span>
+            <span>{invoiceData.receivedCash}</span>
           </div>
           <div className="flex justify-between font-bold text-lg">
             <span>Grand Total:</span>
