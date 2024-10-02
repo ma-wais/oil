@@ -121,18 +121,26 @@ function ProductTable() {
         date: "",
         customerName: "",
         carNo: "",
-        carRent: "",
-        gojarkhanWeight: "",
-        receivedWeight: "",
-        nag: "",
-        previousBalance: "",
+        carRent: 0,
+        gojarkhanWeight: 0,
+        receivedWeight: 0,
+        nag: 0,
+        previousBalance: 0,
       });
-      setProducts([]);
-      fetchNextBillNo();
+      setProducts([
+        {
+          description: "",
+          quantity: 0,
+          Unit: "",
+          rate: 0,
+          total: 0,
+        }
+      ]);
+      fetchCurrentBillNo();
       setShowPrintableInvoice(true);
     } catch (error) {
       console.error(error);
-      alert("Error creating invoice");
+      alert("Invoice created but failed to print");
     }
   };
 

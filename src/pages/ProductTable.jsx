@@ -137,9 +137,10 @@ function ProductTable() {
         previousBalance: "",
       });
       setProducts([]);
+      fetchCurrentBillNo();
     } catch (error) {
       console.error(error);
-      alert("Error creating invoice");
+      alert("Invoice created but failed to print");
     }
   };
 
