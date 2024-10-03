@@ -123,13 +123,13 @@ const PartyLedgerResults = () => {
             params: { dateFrom, dateTo, customerName: partyName },
           }),
           axios.get(`${server}/sale`, {
-            params: { dateTo: previousDateTo, customerName: partyName }, // Subtract 1 day from dateFrom
+            params: { dateTo: previousDateTo, customerName: partyName },
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: previousDateTo, customerName: partyName }, // Subtract 1 day from dateFrom
+            params: { dateTo: previousDateTo, customerName: partyName },
           }),
         ]);
-  
+
         const sales = saleResponse.data;
         console.log(sales);
         const ledgers = ledgerResponse.data;
@@ -277,7 +277,7 @@ const PartyLedgerResults = () => {
                   onClick={() => {isSale ? openPrintableInvoice(entry) : ""}}
                   style={ isSale ? { cursor: "pointer" } : {cursor: "default"}}
                 >
-                  {entry.invoiceNumber}
+                  {entry.invoiceNumber} {entry.billNo}
                 </td>
                 <td className="border px-4 py-2">
                   {isSale ? "Jama" : "Banam Bill"}
@@ -292,6 +292,7 @@ const PartyLedgerResults = () => {
                         {index < entry.items.length - 1 ? ", " : ""}
                       </span>
                     ))}
+                    {entry.description && <span>{entry.description}</span>}
                 </td>
                 <td className="border px-4 py-2">
                   {isSale ? entry.grandTotal.toFixed(2) : "0.00"}
