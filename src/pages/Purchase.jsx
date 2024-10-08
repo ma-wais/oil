@@ -71,14 +71,18 @@ function ProductTable() {
       return acc + (parseFloat(product.total) || 0);
     }, 0);
 
-    const carRent = parseFloat(invoiceDetails.carRent) || 0;
-    const newGrandTotal = productsTotal + carRent;
-    setNetAmount(newGrandTotal.toFixed(2));
-    setGrandTotal(newGrandTotal + Number(invoiceDetails.previousBalance));
+    setNetAmount(productsTotal.toFixed(2));
+    setGrandTotal(productsTotal + Number(invoiceDetails.previousBalance));
   }, [products, invoiceDetails, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
-    setProducts([...products, productDetails]);
+    const productWithDefaults = {
+      ...productDetails,
+      rate: productDetails.rate || 0, 
+      quantity: productDetails.quantity || 0,
+    };
+    setProducts([...products, productWithDefaults]);
+  
     setProductDetails({
       description: "",
       quantity: 0,
@@ -316,6 +320,7 @@ function ProductTable() {
                   type={index === 0 ? "text" : "number"}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   value={productDetails[label.toLowerCase().replace(" ", "")]}
+                  min={0}
                   onChange={(e) =>
                     setProductDetails({
                       ...productDetails,

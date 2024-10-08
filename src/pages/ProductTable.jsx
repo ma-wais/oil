@@ -3,7 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import { server } from "../App";
 import PrintableInvoice from "./PrintInvoicesale";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
@@ -44,9 +44,11 @@ function ProductTable() {
     const newGrandTotal = productsTotal;
     setNetAmount(newGrandTotal.toFixed(2));
     setGrandTotal(
-      Number(newGrandTotal) + Number(invoiceDetails.previousBalance) - receivedCash
+      Number(newGrandTotal) +
+        Number(invoiceDetails.previousBalance) -
+        receivedCash
     );
-  }, [products, invoiceDetails.previousBalance, receivedCash ]);
+  }, [products, invoiceDetails.previousBalance, receivedCash]);
 
   useEffect(() => {
     fetchCurrentBillNo();
@@ -56,9 +58,9 @@ function ProductTable() {
   const fetchCurrentBillNo = async () => {
     try {
       const response = await axios.get(`${server}/purchase/currentBillNo`);
-      setInvoiceDetails(prevDetails => ({
+      setInvoiceDetails((prevDetails) => ({
         ...prevDetails,
-        billNo: response.data.currentBillNo
+        billNo: response.data.currentBillNo,
       }));
     } catch (error) {
       console.error("Error fetching current bill number:", error);
@@ -74,11 +76,13 @@ function ProductTable() {
     }
   };
   const addProduct = () => {
-    const newProduct = {
+    const productWithDefaults = {
       ...productDetails,
+      rate: productDetails.rate || 0,
+      quantity: productDetails.quantity || 0,
       id: Date.now(),
     };
-    setProducts([...products, newProduct]);
+    setProducts([...products, productWithDefaults]);
     setProductDetails({
       description: "",
       quantity: 0,
@@ -89,17 +93,19 @@ function ProductTable() {
   };
 
   const openPrintableInvoice = (invoiceData) => {
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write('<html><head><title>Print Invoice</title>');
-    printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">');
-    printWindow.document.write('</head><body>');
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write("<html><head><title>Print Invoice</title>");
+    printWindow.document.write(
+      '<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">'
+    );
+    printWindow.document.write("</head><body>");
     printWindow.document.write('<div id="print-root"></div>');
-    printWindow.document.write('</body></html>');
+    printWindow.document.write("</body></html>");
     printWindow.document.close();
-  
+
     ReactDOM.render(
       <PrintableInvoice invoiceData={invoiceData} />,
-      printWindow.document.getElementById('print-root')
+      printWindow.document.getElementById("print-root")
     );
   };
 
@@ -112,10 +118,10 @@ function ProductTable() {
 
     const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
     const nextBillNo = nextBillResponse.data.nextBillNo;
-    setInvoiceDetails(prevDetails => ({
+    setInvoiceDetails((prevDetails) => ({
       ...prevDetails,
-      billNo: nextBillNo
-    }))
+      billNo: nextBillNo,
+    }));
     const data = {
       ...invoiceDetails,
       products,
