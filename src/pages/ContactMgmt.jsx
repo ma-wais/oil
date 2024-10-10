@@ -10,6 +10,7 @@ const ContactManagement = () => {
   const [name, setName] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [amount, setAmount] = useState(0);
+  const [balanceType, setBalanceType] = useState("");
   const [billNo, setBillNo] = useState();
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -30,6 +31,7 @@ const ContactManagement = () => {
         ...customersResponse.data.map((c) => ({ ...c, type: "customer" })),
         ...partiesResponse.data.map((p) => ({ ...p, type: "party" })),
       ]);
+      console.log(contacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
@@ -59,10 +61,10 @@ const ContactManagement = () => {
         billNo,
         date,
         description,
+        type: balanceType,
       });
       setAmount(0);
       setDescription("");
-      setDate("");
       fetchAllContacts();
     } catch (error) {
       console.error("Error updating balance:", error);
@@ -96,10 +98,7 @@ const ContactManagement = () => {
   const handleUpdate = async () => {
     try {
       const updateContact = { name, type };
-      await axios.put(
-        `${server}/contact/${updatedContact._id}`,
-        updateContact
-      );
+      await axios.put(`${server}/contact/${updatedContact._id}`, updateContact);
       fetchAllContacts();
       setSelectedContact(null);
     } catch (error) {
@@ -116,11 +115,10 @@ const ContactManagement = () => {
         <Select
           options={contacts.map((c) => ({
             value: c.name,
-            label: `${c.name} (${c.type})`,
+            label: `${c.name}`,
           }))}
           onChange={(e) => {
             setSelectedContact(e.value);
-            console.log(selectedContact);
           }}
           placeholder="Select contact to update balance"
           className="w-[400px]"
@@ -130,38 +128,50 @@ const ContactManagement = () => {
       {selectedContact && (
         <div className="mb-4">
           <h3 className="text-lg font-semibold mb-2">Update Balance:</h3>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Amount"
-            className="border p-2 rounded mr-2 w-[400px]"
-          />
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="border p-2 rounded mr-2 w-[400px]"
-          />
-          <input
-            type="text"
-            placeholder="Bill No"
-            value={billNo}
-            onChange={(e) => setBillNo(e.target.value)}
-            className="border p-2 rounded mr-2 w-[400px]"
-          />
-          <input
-            type="date"
-            onChange={(e) => setDate(e.target.value)}
-            className="border p-2 rounded mr-2 w-[400px]"
-          />
-          <button
-            onClick={handleUpdateBalance}
-            className="bg-yellow-500 text-white p-2 rounded"
-          >
-            Update Balance
-          </button>
+          <div className="flex gap-2 flex-wrap">
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Amount"
+              className="border p-2 rounded mr-2 w-[400px]"
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="border p-2 rounded mr-2 w-[400px]"
+            />
+            <input
+              type="text"
+              placeholder="Bill No"
+              value={billNo}
+              onChange={(e) => setBillNo(e.target.value)}
+              className="border p-2 rounded mr-2 w-[400px]"
+            />
+            <input
+              type="date"
+              onChange={(e) => setDate(e.target.value)}
+              className="border p-2 rounded mr-2 w-[400px]"
+            />
+            <select
+              name="balanceType"
+              id="balanceType"
+              className="border p-2 rounded mr-2 w-[400px]"
+              onChange={(e) => setBalanceType(e.target.value)}
+            >
+              <option value="">Select type</option>
+              <option value="cr">Credit</option>
+              <option value="dr">Debit</option>
+            </select>
+            <button
+              onClick={handleUpdateBalance}
+              className="bg-yellow-500 text-white p-2 rounded"
+            >
+              Update Balance
+            </button>
+          </div>
         </div>
       )}
 
@@ -182,7 +192,7 @@ const ContactManagement = () => {
               placeholder="New contact name"
               className="border p-2 rounded mr-2"
             />
-            <select
+            {/* <select
               value={type}
               onChange={(e) => setType(e.target.value)}
               className="border p-2 rounded mr-2"
@@ -190,7 +200,7 @@ const ContactManagement = () => {
               <option value="">Select type</option>
               <option value="customer">Customer</option>
               <option value="party">Party</option>
-            </select>
+            </select> */}
             <button
               type="submit"
               className="bg-blue-500 text-white p-2 rounded mr-2"
@@ -218,7 +228,11 @@ const ContactManagement = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
           />
-          <select className="border p-2 rounded mr-2" value={type} onChange={(e) => setType(e.target.value)}>
+          <select
+            className="border p-2 rounded mr-2"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
             <option value="customer">Customer</option>
             <option value="party">Party</option>
           </select>
@@ -235,31 +249,33 @@ const ContactManagement = () => {
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">Name</th>
-            <th className="border border-gray-300 p-2">Type</th>
-            <th className="border border-gray-300 p-2">Balance</th>
-            <th className="border border-gray-300 p-2">Actions</th>
+            {/* <th className="border border-gray-300 p-2">Type</th> */}
+            <th className="border border-gray-300 p-2">Opening Dr</th>
+            <th className="border border-gray-300 p-2">Opening Cr</th>
+            <th className="border border-gray-300 p-2 w-[200px]">Actions</th>
           </tr>
         </thead>
         <tbody>
           {contacts.map((contact, index) => (
             <tr key={index}>
               <td className="border border-gray-300 p-2">{contact.name}</td>
-              <td className="border border-gray-300 p-2 capitalize">
+              {/* <td className="border border-gray-300 p-2 capitalize">
                 {contact.type}
-              </td>
+              </td> */}
               <td className="border border-gray-300 p-2">
                 {contact.openingDr || 0}
               </td>
+              <td className="border border-gray-300 p-2">{contact.openingCr || 0}</td>
               <td className="border border-gray-300 p-2">
                 <button
                   onClick={() => handleEdit(contact)}
-                  className="mr-2 bg-blue-500 text-white p-1"
+                  className="mr-2 bg-blue-500 text-white p-1 rounded"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(contact._id)}
-                  className="bg-red-500 text-white p-1"
+                  className="bg-red-500 text-white p-1 rounded"
                 >
                   Delete
                 </button>

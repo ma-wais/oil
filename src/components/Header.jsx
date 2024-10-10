@@ -15,8 +15,8 @@ const Header = ({ setToken, setUser }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
 
-  if(location.pathname.includes("results")) {
-    return null
+  if (location.pathname.includes("results")) {
+    return null;
   }
 
   const dropdownItems = {
@@ -76,77 +76,82 @@ const Header = ({ setToken, setUser }) => {
 
   return (
     <header className="bg-white shadow">
-      <nav className="flex justify-center md:px-6 py-2 md:gap-6 bg-gray-200">
-        <NavButton
-          icon={
-            <Link to="/home">
-              <FaHome className="text-xl" />
-            </Link>
-          }
-          label="Homepage"
-        />
-        <NavButton
-          icon={<FaHandHoldingUsd className="text-xl" />}
-          label="Sale of goods"
-          hasDropdown
-          dropdownItems={dropdownItems.sales}
-          isOpen={openDropdown === "sales"}
-          onToggle={() => handleDropdownToggle("sales")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <NavButton
-          icon={<FaUserPlus className="text-xl" />}
-          label="Purchase"
-          hasDropdown
-          dropdownItems={dropdownItems.wealth}
-          isOpen={openDropdown === "wealth"}
-          onToggle={() => handleDropdownToggle("wealth")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <NavButton
-          icon={<FaHandHoldingUsd className="text-xl" />}
-          label="Stock"
-          hasDropdown
-          dropdownItems={dropdownItems.stock}
-          isOpen={openDropdown === "stock"}
-          onToggle={() => handleDropdownToggle("stock")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <NavButton
-          icon={<FaCog className="text-xl" />}
-          label="Crushings"
-          hasDropdown
-          dropdownItems={dropdownItems.crushings}
-          isOpen={openDropdown === "crushings"}
-          onToggle={() => handleDropdownToggle("crushings")}
-          onItemClick={handleDropdownItemClick}
-        />
-        <Link to={"/sale-report"}>
-          <NavButton icon={<FaChartBar className="text-xl" />} label="Report" />
-        </Link>
-        <NavButton
-          icon={<FaCog className="text-xl" />}
-          label="Back Office"
-          hasDropdown
-          dropdownItems={dropdownItems.boxOffice}
-          isOpen={openDropdown === "boxOffice"}
-          onToggle={() => handleDropdownToggle("boxOffice")}
-          onItemClick={handleDropdownItemClick}
-        />
+      <nav className="flex justify-between bg-gray-200">
+        <div className="flex gap ml-8"> 
+          <NavButton
+            icon={
+              <Link to="/home">
+                <FaHome className="text-lg" />
+              </Link>
+            }
+            label="Homepage"
+          />
+          <NavButton
+            icon={<FaHandHoldingUsd className="text-lg" />}
+            label="Sale of goods"
+            hasDropdown
+            dropdownItems={dropdownItems.sales}
+            isOpen={openDropdown === "sales"}
+            onToggle={() => handleDropdownToggle("sales")}
+            onItemClick={handleDropdownItemClick}
+          />
+          <NavButton
+            icon={<FaUserPlus className="text-lg" />}
+            label="Purchase"
+            hasDropdown
+            dropdownItems={dropdownItems.wealth}
+            isOpen={openDropdown === "wealth"}
+            onToggle={() => handleDropdownToggle("wealth")}
+            onItemClick={handleDropdownItemClick}
+          />
+          <NavButton
+            icon={<FaHandHoldingUsd className="text-lg" />}
+            label="Stock"
+            hasDropdown
+            dropdownItems={dropdownItems.stock}
+            isOpen={openDropdown === "stock"}
+            onToggle={() => handleDropdownToggle("stock")}
+            onItemClick={handleDropdownItemClick}
+          />
+          <NavButton
+            icon={<FaCog className="text-lg" />}
+            label="Crushings"
+            hasDropdown
+            dropdownItems={dropdownItems.crushings}
+            isOpen={openDropdown === "crushings"}
+            onToggle={() => handleDropdownToggle("crushings")}
+            onItemClick={handleDropdownItemClick}
+          />
+          <Link to={"/sale-report"}>
+            <NavButton
+              icon={<FaChartBar className="text-lg" />}
+              label="Report"
+            />
+          </Link>
+          <NavButton
+            icon={<FaCog className="text-lg" />}
+            label="Back Office"
+            hasDropdown
+            dropdownItems={dropdownItems.boxOffice}
+            isOpen={openDropdown === "boxOffice"}
+            onToggle={() => handleDropdownToggle("boxOffice")}
+            onItemClick={handleDropdownItemClick}
+          />
 
-        <NavButton
-          icon={<FaUserPlus className="text-xl" />}
-          label="Stakeholders"
-          hasDropdown
-          dropdownItems={dropdownItems.stakeholders}
-          isOpen={openDropdown === "stakeholders"}
-          onToggle={() => handleDropdownToggle("stakeholders")}
-          onItemClick={handleDropdownItemClick}
-        />
+          <NavButton
+            icon={<FaUserPlus className="text-lg" />}
+            label="Stakeholders"
+            hasDropdown
+            dropdownItems={dropdownItems.stakeholders}
+            isOpen={openDropdown === "stakeholders"}
+            onToggle={() => handleDropdownToggle("stakeholders")}
+            onItemClick={handleDropdownItemClick}
+          />
+        </div>
 
         <button
           onClick={() => logout()}
-          className="px-2 h-10 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-2 h-10 mt-3 mr-4 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Log Out
         </button>
@@ -169,7 +174,7 @@ const NavButton = ({
     <div className="relative nav-button">
       <button
         onClick={hasDropdown ? onToggle : undefined}
-        className="flex flex-col p-2 items-center"
+        className="flex flex-col p-1 items-center"
       >
         {icon}
         {label}

@@ -69,12 +69,13 @@ function ProductTable() {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${server}/contact?type=${"customer"}`);
+      const response = await axios.get(`${server}/contact`);
       setContacts(response.data);
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
   };
+
   const addProduct = () => {
     const productWithDefaults = {
       ...productDetails,
