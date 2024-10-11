@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react";
 import { server } from "../App";
 import { useNavigate } from "react-router-dom";
 import { BiLock, BiUser } from "react-icons/bi";
-import { CgLogIn } from "react-icons/cg";
-import { RiRefreshFill } from "react-icons/ri";
-
+import img from '../components/R.png'
 const Login = ({ setToken, setUser, token }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -50,7 +48,7 @@ const Login = ({ setToken, setUser, token }) => {
     <div className="flex items-center bg-gray-100 justify-center min-h-screen m-auto">
       <div className="max-w-[800px] flex">
         <img
-          src="https://th.bing.com/th/id/R.6db11d2fe5e894fe8964fdd99a0ce7ac?rik=sY1cDfI7c7banQ&riu=http%3a%2f%2fkpauto.co.in%3a1360%2fadmin-dependencies%2fimg%2fgallery%2flogin.png&ehk=k8eQTleWJQCar%2fwE2eFwP%2fGtrnZjFo4NmOmNQkvB86k%3d&risl=&pid=ImgRaw&r=0"
+          src={img}
           alt=""
           className="w-[380px] h-[380px] object-cover shadow-lg"
         />
