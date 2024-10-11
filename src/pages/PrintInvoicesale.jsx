@@ -45,7 +45,7 @@ const PrintableInvoice = ({ invoiceData }) => {
             <table className="w-full border-collapse bg-gray-50">
               <thead className="bg-gray-200">
                 <tr className="border-b-2 border-gray-300">
-                  <th className="text-left py-2 px-4">Description</th>
+                  {/* <th className="text-left py-2 px-4">Description</th> */}
                   <th className="text-right py-2 w-24">Quantity</th>
                   <th className="text-right py-2 w-24">Unit</th>
                   <th className="text-right py-2 w-24">Rate</th>
@@ -60,7 +60,7 @@ const PrintableInvoice = ({ invoiceData }) => {
                       index % 2 === 0 ? "bg-white" : "bg-gray-100"
                     }`}
                   >
-                    <td className="py-2 px-4">{item.description || "N/A"}</td>
+                    {/* <td className="py-2 px-4">{item.description || "N/A"}</td> */}
                     <td className="text-right py-2">
                       {item.quantity || "N/A"}
                     </td>

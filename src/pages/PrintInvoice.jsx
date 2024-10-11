@@ -28,7 +28,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
         <table className="w-full border-collapse bg-gray-50">
           <thead className="bg-gray-200">
             <tr className="border-b-2 border-gray-300">
-              <th className="text-left py-3 px-4 border border-gray-300">Description</th>
+              {/* <th className="text-left py-3 px-4 border border-gray-300">Description</th> */}
               <th className="text-right py-3 px-4 border border-gray-300">Quantity</th>
               <th className="text-right py-3 px-4 border border-gray-300">Unit</th>
               <th className="text-right py-3 px-4 border border-gray-300">Rate</th>
@@ -43,7 +43,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
                   index % 2 === 0 ? "bg-gray-100" : "bg-white"
                 }`}
               >
-                <td className="py-2 px-4 border border-gray-300">{product.description}</td>
+                {/* <td className="py-2 px-4 border border-gray-300">{product.description}</td> */}
                 <td className="text-right py-2 px-4 border border-gray-300">{product.quantity}</td>
                 <td className="text-right py-2 px-4 border border-gray-300">{product.weight}</td>
                 <td className="text-right py-2 px-4 border border-gray-300">{product.rate}</td>
