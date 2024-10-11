@@ -15,7 +15,7 @@ const Header = ({ setToken, setUser }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
 
-  if (location.pathname.includes("results")) {
+  if (location.pathname.includes("results") || location.pathname === "/") {
     return null;
   }
 
