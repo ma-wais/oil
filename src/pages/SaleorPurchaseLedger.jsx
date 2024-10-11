@@ -252,7 +252,7 @@ const LedgerResults = () => {
             <th className="border bg-slate-200 px-2 py-2">Date</th>
             <th className="border bg-slate-200 px-2 py-1">Bill</th>
             <th className="border bg-slate-200 px-2 py-2">Entry</th>
-            <th className="border bg-slate-200 px-2 py-2">Description</th>
+            {/* <th className="border bg-slate-200 px-2 py-2">Description</th> */}
             {/* <th className="border bg-slate-200 px-2 py-2">Name</th> */}
             <th className="border bg-slate-200 px-2 py-2">Banam</th>
             <th className="border bg-slate-200 px-2 py-2">Jama</th>
@@ -308,9 +308,9 @@ const LedgerResults = () => {
                       ))}
                   </td>
                 )}
-                {!isSale && (
+                {/* {!isSale && (
                   <td className="border px-2 py-2">{entry.description}</td>
-                )}
+                )} */}
                 {/* <td className="border px-2 py-2">
                   {entry.customerName || entry.contactName}
                 </td> */}

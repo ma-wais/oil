@@ -244,7 +244,7 @@ const PartyLedgerResults = () => {
             <th className="border bg-slate-200 px-4 py-2">Date</th>
             <th className="border bg-slate-200 px-4 py-2">Bill No</th>
             <th className="border bg-slate-200 px-4 py-2">Entry</th>
-            <th className="border bg-slate-200 px-4 py-2">Description</th>
+            {/* <th className="border bg-slate-200 px-4 py-2">Description</th> */}
             <th className="border bg-slate-200 px-4 py-2">Jama</th>
             <th className="border bg-slate-200 px-4 py-2">Banam</th>
             <th colSpan={2} className="border bg-slate-200 px-4 py-2">
@@ -286,7 +286,7 @@ const PartyLedgerResults = () => {
                   {entry.items &&
                     entry.items.map((item, index) => (
                       <span key={index}>
-                        {item.description}&nbsp;&nbsp;
+                        {/* {item.description}&nbsp;&nbsp; */}
                         {item.quantity}&nbsp;&nbsp;
                         {item.weight}&nbsp;{item.rate}@&nbsp; {item.total}
                         {index < entry.items.length - 1 ? ", " : ""}
