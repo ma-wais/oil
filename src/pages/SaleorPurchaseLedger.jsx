@@ -250,7 +250,7 @@ const LedgerResults = () => {
   const { totalDebit, totalCredit } = calculateTotals();
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-4 max-w-[1000px] mx-auto">
       <div className="flex justify-between">
         <h2 className="text-2xl my-4 font-bold ">Oil Kohlu</h2>
         <h4 className="text-2xl font-bold my-4">Account Ledger</h4>
@@ -275,7 +275,7 @@ const LedgerResults = () => {
             <th className="border bg-slate-200 px-2 py-2">Date</th>
             <th className="border bg-slate-200 px-2 py-1">Bill</th>
             <th className="border bg-slate-200 px-2 py-2">Entry</th>
-            {/* <th className="border bg-slate-200 px-2 py-2">Description</th> */}
+            <th className="border bg-slate-200 py-2">Disc</th>
             {/* <th className="border bg-slate-200 px-2 py-2">Name</th> */}
             <th className="border bg-slate-200 px-2 py-2">Banam</th>
             <th className="border bg-slate-200 px-2 py-2">Jama</th>
@@ -333,18 +333,18 @@ const LedgerResults = () => {
                   {entry.type === 'dr' && 'Banam'}
                   {entry.type === 'cr' && 'Jama'}
                 </td>
-                {/* <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
+                <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
                   {entry.items && entry.items.map((item, index) => (
                     <span key={index}>
                       {item.description}&nbsp;&nbsp;
-                      {item.quantity}&nbsp;
+                      {/* {item.quantity}&nbsp;
                       {item.weight}&nbsp;{item.rate}@&nbsp;
-                      {item.total}
+                      {item.total} */}
                       {index < entry.items.length - 1 ? ", " : ""}
                     </span>
                   ))}
                   {!entry.items && entry.description}
-                </td> */}
+                </td>
                 <td className="border px-2 py-2">
                   {(entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) ? amount.toFixed(2) : "0.00"}
                 </td>
