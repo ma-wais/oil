@@ -365,7 +365,7 @@ const LedgerResults = () => {
             {" "}
           </tr>
           <tr>
-            <td className="border px-2 py-2 font-bold text-right" colSpan={4}>
+            <td className="border px-2 py-2 font-bold text-right" colSpan={5}>
               Total
             </td>
             <td className="border px-2 py-2 font-bold">
@@ -380,7 +380,7 @@ const LedgerResults = () => {
           </tr>
           <tr colspan={9}></tr>
           <tr>
-            <td colspan={7} className="border bg-slate-200 px-2 py-2 font-bold">
+            <td colspan={8} className="border bg-slate-200 px-2 py-2 font-bold">
               Current Balance
             </td>
             <td rowSpan={1} className="border bg-slate-200 px-2 py-2 font-bold">
