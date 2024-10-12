@@ -13,6 +13,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
         <p>
           <span className="font-semibold">Invoice No:</span>{" "}
           {invoiceData.billNo}
+          {invoiceData.invoiceNumber}
         </p>
         <p>
           <span className="font-semibold">Date:</span>{" "}
@@ -21,6 +22,8 @@ const PrintableInvoicePage = ({ invoiceData }) => {
         <p>
           <span className="font-semibold">Party:</span>{" "}
           {invoiceData.customerName}
+          {invoiceData.partyName}
+
         </p>
       </div>
         <p className="my-5"><b>Issued On :</b> {currentDate.toDateString()}</p>

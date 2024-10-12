@@ -326,7 +326,7 @@ const LedgerResults = () => {
                   }}
                   style={{ cursor: entry.entryType === 'sale' || entry.entryType === 'purchase' ? "pointer" : "default" }}
                 >
-                  {entry.billNo || 'N/A'}
+                  {entry.billNo || entry.invoiceNumber || "N/A"}
                 </td>
                 <td className="border px-2 py-2">
                   {entry.entryType && entry.entryType}
@@ -355,7 +355,7 @@ const LedgerResults = () => {
                   {runningBalance.toFixed(2)}
                 </td>
                 <td className="border px-2 py-2">
-                  {runningBalance > 0 ? "Receivable" : "Payable"}
+                  {runningBalance > 0 ? "Banam" : "Jama"}
                 </td>
               </tr>
             );

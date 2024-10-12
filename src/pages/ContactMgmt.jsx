@@ -249,8 +249,8 @@ const ContactManagement = () => {
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">Name</th>
             {/* <th className="border border-gray-300 p-2">Type</th> */}
-            <th className="border border-gray-300 p-2">Opening Dr</th>
-            <th className="border border-gray-300 p-2">Opening Cr</th>
+            <th className="border border-gray-300 p-2">Banam</th>
+            <th className="border border-gray-300 p-2">Jama</th>
             <th className="border border-gray-300 p-2 w-[200px]">Actions</th>
           </tr>
         </thead>

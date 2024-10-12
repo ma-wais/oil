@@ -16,7 +16,7 @@ const UpdateStock = ({  }) => {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${server}/contact?type=party`);
+      const response = await axios.get(`${server}/contact`);
       setContacts(response.data);
     } catch (error) {
       console.error("Error fetching contacts:", error);
