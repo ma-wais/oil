@@ -43,12 +43,12 @@ const Header = ({ setToken, setUser }) => {
       { to: "/contactledger", label: "Balance Records" },
       {
         to: "/ledger",
-        label: "Customer Ledger",
+        label: "Account Ledger",
       },
-      {
-        to: "/party",
-        label: "Party Ledger",
-      },
+      // {
+      //   to: "/party",
+      //   label: "Party Ledger",
+      // },
       { to: "/totals", label: "Total Payable and Recievable" },
     ],
   };

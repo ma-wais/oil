@@ -20,7 +20,7 @@ const Ledger = () => {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${server}/contact?type=${"customer"}`);
+      const response = await axios.get(`${server}/contact`);
       setContacts(response.data);
     } catch (error) {
       console.error("Error fetching contacts:", error);
@@ -39,13 +39,13 @@ const Ledger = () => {
       return;
     }
     navigate("/ledger-results", {
-      state: { dateFrom, dateTo, customerName: name },
+      state: { dateFrom, dateTo, accountName: name },
     });
   };
 
   return (
     <div className="p-4 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold">{"Customer Ledger"}</h2>
+      <h2 className="text-2xl font-bold">Account Ledger</h2>
       <form className="space-y-4 mt-4">
         <div>
           <label className="block text-sm font-medium">Date From</label>
@@ -91,20 +91,19 @@ const Ledger = () => {
 };
 
 const LedgerResults = () => {
-  const [saleData, setSaleData] = useState([]);
-  const [ledgerRecords, setLedgerRecords] = useState([]);
+  const [ledgerEntries, setLedgerEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [previousBalance, setPreviousBalance] = useState(0);
   const { state } = useLocation();
-  const { dateFrom, dateTo, customerName } = state || {};
+  const { dateFrom, dateTo, accountName } = state || {};
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const subtractOneDay = (dateString) => {
           const date = new Date(dateString);
-          date.setDate(date.getDate() - 1); 
+          date.setDate(date.getDate() - 1);
           return date.toISOString().split('T')[0];
         };
   
@@ -112,53 +111,64 @@ const LedgerResults = () => {
   
         const [
           saleResponse,
-          ledgerResponse,
+          purchaseResponse,
+          ledgerRecordsResponse,
           prevSaleResponse,
-          prevLedgerResponse,
+          prevPurchaseResponse,
+          prevLedgerRecordsResponse,
+          contactResponse
         ] = await Promise.all([
           axios.get(`${server}/sale`, {
-            params: { dateFrom, dateTo, customerName },
+            params: { dateFrom, dateTo, customerName: accountName },
+          }),
+          axios.get(`${server}/ledger`, {
+            params: { dateFrom, dateTo, partyName: accountName },
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateFrom, dateTo, customerName },
+            params: { dateFrom, dateTo, customerName: accountName },
           }),
           axios.get(`${server}/sale`, {
-            params: { dateTo: previousDateTo, customerName },
+            params: { dateTo: previousDateTo, customerName: accountName },
+          }),
+          axios.get(`${server}/ledger`, {
+            params: { dateTo: previousDateTo, partyName: accountName },
           }),
           axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: previousDateTo, customerName },
+            params: { dateTo: previousDateTo, customerName: accountName },
           }),
+          axios.get(`${server}/contact`, {
+            params: { name: accountName },
+          })
         ]);
-  
-        const sales = saleResponse.data;
-        const ledgers = ledgerResponse.data;
+
+        const sales = saleResponse.data.map(sale => ({ ...sale, entryType: 'sale' }));
+        const purchases = purchaseResponse.data.map(purchase => ({ ...purchase, entryType: 'purchase' }));
+        const ledgerRecords = ledgerRecordsResponse.data;
+        
         const prevSales = prevSaleResponse.data;
-        const prevLedgers = prevLedgerResponse.data;
-  
-        setSaleData(sales);
-        setLedgerRecords(ledgers);
-  
-        console.log("Sales:", sales);
-        console.log("Ledgers:", ledgers);
-        console.log("Previous Sales:", prevSales);
-        console.log("Previous Ledgers:", prevLedgers);
-  
-        const previousSalesTotal = prevSales.reduce(
-          (sum, sale) => sum + (sale.grandTotal || 0),
-          0
-        );
-        const previousLedgersTotal = prevLedgers.reduce(
-          (sum, record) => sum + (record.amount || 0),
-          0
-        );
-        const calculatedPreviousBalance =
-          previousSalesTotal - previousLedgersTotal;
-  
+        const prevPurchases = prevPurchaseResponse.data;
+        const prevLedgerRecords = prevLedgerRecordsResponse.data;
+        // console.log(prevSales, prevPurchases, prevLedgerRecords);
+
+        const contact = contactResponse.data;
+
+        const allEntries = [...sales, ...purchases, ...ledgerRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+        setLedgerEntries(allEntries);
+        console.log(allEntries);
+
+        const prevSalesTotal = prevSales.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0);
+        const prevPurchasesTotal = prevPurchases.reduce((sum, purchase) => sum + (purchase.grandTotal || 0), 0);
+        const prevLedgerRecordsTotal = prevLedgerRecords.reduce((sum, record) => {
+          if (record.type === 'dr') return sum + record.amount;
+          if (record.type === 'cr') return sum - record.amount;
+          return sum;
+        }, 0);
+
+        const openingBalance = (contact.openingDr || 0) - (contact.openingCr || 0);
+        const calculatedPreviousBalance = openingBalance + prevSalesTotal - prevPurchasesTotal + prevLedgerRecordsTotal;
         setPreviousBalance(calculatedPreviousBalance);
-  
-        console.log("Previous Sales Total:", previousSalesTotal);
-        console.log("Previous Ledgers Total:", previousLedgersTotal);
-        console.log("Calculated Previous Balance:", calculatedPreviousBalance);
+
+        console.log("Previous Balance:", calculatedPreviousBalance);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");
@@ -168,15 +178,11 @@ const LedgerResults = () => {
     };
   
     fetchData();
-  }, [dateFrom, dateTo, customerName]);
+  }, [dateFrom, dateTo, accountName]);
   
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-
-  const allEntries = [...saleData, ...ledgerRecords].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
 
   let runningBalance = previousBalance;
 
@@ -226,22 +232,39 @@ const LedgerResults = () => {
     }
   };
 
+  const calculateTotals = () => {
+    let totalDebit = 0;
+    let totalCredit = 0;
+
+    ledgerEntries.forEach(entry => {
+      if (entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) {
+        totalDebit += entry.grandTotal || entry.amount || 0;
+      } else if (entry.entryType === 'purchase' || (entry.type === 'cr' && !entry.entryType)) {
+        totalCredit += entry.grandTotal || entry.amount || 0;
+      }
+    });
+
+    return { totalDebit, totalCredit };
+  };
+
+  const { totalDebit, totalCredit } = calculateTotals();
+
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <div className="flex justify-between">
-        <h2 className="text-2xl my-4">Company Name</h2>
-        <h4 className="text-2xl font-bold my-4">Customer Ledger</h4>
+        <h2 className="text-2xl my-4 font-bold ">Oil Kohlu</h2>
+        <h4 className="text-2xl font-bold my-4">Account Ledger</h4>
       </div>
-      <p className="ml-[60%] text-right">
+      <p className="text-right">
         <b>From</b> {dateFrom} <b>to</b> {dateTo}
       </p>
       {/* Display current date and time */}
-      <p className="ml-[60%] text-right">
+      <p className="text-right">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
         {new Date().toLocaleTimeString()} <br />
       </p>
       <p>
-        <b>Customer Name:</b> {customerName || "N/A"}
+        <b>Name:</b> {accountName || "N/A"}
       </p>
 
       {/* Ledger Table */}
@@ -261,7 +284,7 @@ const LedgerResults = () => {
             </th>
           </tr>
           <tr>
-            <th className="border px-2 py-2 text-right" colSpan={7}>
+            <th className="border px-2 py-2 text-right" colSpan={6}>
               Previous
             </th>
             <th className="border px-2 py-2" colSpan={2}>
@@ -270,10 +293,23 @@ const LedgerResults = () => {
           </tr>
         </thead>
         <tbody>
-          {allEntries.map((entry, index) => {
-            const isSale = "grandTotal" in entry;
-            const amount = isSale ? entry.grandTotal : -entry.amount;
-            runningBalance += amount;
+          {ledgerEntries.map((entry, index) => {
+            let amount = 0;
+            if (entry.entryType === 'sale') {
+              amount = entry.grandTotal;
+              runningBalance += amount;
+            } else if (entry.entryType === 'purchase') {
+              amount = entry.grandTotal;
+              runningBalance -= amount;
+            } else {
+              // Ledger record
+              amount = entry.amount;
+              if (entry.type === 'dr') {
+                runningBalance += amount;
+              } else if (entry.type === 'cr') {
+                runningBalance -= amount;
+              }
+            }
 
             return (
               <tr key={entry._id}>
@@ -283,48 +319,43 @@ const LedgerResults = () => {
                 </td>
                 <td
                   className="border px-2 py-1"
-                  onClick={() => {isSale ? openPrintableInvoice(entry) : ""}}
-                  style={ isSale ? { cursor: "pointer" } : {cursor: "default"}}
+                  onClick={() => {
+                    if (entry.entryType === 'sale' || entry.entryType === 'purchase') {
+                      openPrintableInvoice(entry);
+                    }
+                  }}
+                  style={{ cursor: entry.entryType === 'sale' || entry.entryType === 'purchase' ? "pointer" : "default" }}
                 >
-                  {entry.billNo}
+                  {entry.billNo || 'N/A'}
                 </td>
                 <td className="border px-2 py-2">
-                  {isSale ? "Banam Bill" : "Jama"}
+                  {entry.entryType && entry.entryType}
+                  {entry.type === 'dr' && 'Banam'}
+                  {entry.type === 'cr' && 'Jama'}
                 </td>
-                {isSale && (
-                  <td
-                    className="border px-2 py-1"
-                    style={{ whiteSpace: "nowrap", fontSize: "12px" }}
-                  >
-                    {entry.items &&
-                      entry.items.map((item, index) => (
-                        <span key={index}>
-                          {item.description}&nbsp;&nbsp;
-                          {item.quantity}&nbsp;
-                          {item.weight}&nbsp;{item.rate}@&nbsp;
-                          {item.total}
-                          {index < entry.items.length - 1 ? ", " : ""}
-                        </span>
-                      ))}
-                  </td>
-                )}
-                {/* {!isSale && (
-                  <td className="border px-2 py-2">{entry.description}</td>
-                )} */}
-                {/* <td className="border px-2 py-2">
-                  {entry.customerName || entry.contactName}
+                {/* <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
+                  {entry.items && entry.items.map((item, index) => (
+                    <span key={index}>
+                      {item.description}&nbsp;&nbsp;
+                      {item.quantity}&nbsp;
+                      {item.weight}&nbsp;{item.rate}@&nbsp;
+                      {item.total}
+                      {index < entry.items.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+                  {!entry.items && entry.description}
                 </td> */}
                 <td className="border px-2 py-2">
-                  {isSale ? entry.grandTotal.toFixed(2) : "0.00"}
+                  {(entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) ? amount.toFixed(2) : "0.00"}
                 </td>
                 <td className="border px-2 py-2">
-                  {!isSale ? entry.amount.toFixed(2) : "0.00"}
+                  {(entry.entryType === 'purchase' || (entry.type === 'cr' && !entry.entryType)) ? amount.toFixed(2) : "0.00"}
                 </td>
                 <td className="border px-2 py-2">
                   {runningBalance.toFixed(2)}
                 </td>
                 <td className="border px-2 py-2">
-                  {runningBalance.toFixed(2) > 0 ? "Banam" : "Jama"}
+                  {runningBalance > 0 ? "Receivable" : "Payable"}
                 </td>
               </tr>
             );
@@ -334,22 +365,22 @@ const LedgerResults = () => {
             {" "}
           </tr>
           <tr>
-            <td className="border px-2 py-2 font-bold text-right" colSpan={5}>
+            <td className="border px-2 py-2 font-bold text-right" colSpan={4}>
               Total
             </td>
             <td className="border px-2 py-2 font-bold">
-              {saleData.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0)}
+              {totalDebit.toFixed(2)}
             </td>
             <td className="border px-2 py-2 font-bold">
-              {ledgerRecords.reduce(
-                (sum, record) => sum + (record.amount || 0),
-                0
-              )}
+              {totalCredit.toFixed(2)}
+            </td>
+            <td className="border px-2 py-2 font-bold" colSpan={2}>
+              {runningBalance.toFixed(2)}
             </td>
           </tr>
           <tr colspan={9}></tr>
           <tr>
-            <td colspan={8} className="border bg-slate-200 px-2 py-2 font-bold">
+            <td colspan={7} className="border bg-slate-200 px-2 py-2 font-bold">
               Current Balance
             </td>
             <td rowSpan={1} className="border bg-slate-200 px-2 py-2 font-bold">

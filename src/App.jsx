@@ -19,7 +19,7 @@ import ContactManagement from "./pages/ContactMgmt";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import LedgerPage from "./pages/Ledger";
 import { Ledger, LedgerResults } from "./pages/SaleorPurchaseLedger";
-import {PartyLedger, PartyLedgerResults} from "./pages/PartyLedger";
+// import {PartyLedger, PartyLedgerResults} from "./pages/PartyLedger";
 import TotalBalance from "./pages/Totals";
 import StockHistory from "./pages/StockHIstory";
 
@@ -80,8 +80,8 @@ function App() {
           <Route path="/contactledger" element={<LedgerPage />} />
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/ledger-results" element={<LedgerResults />} />
-          <Route path="/party" element={<PartyLedger />} />
-          <Route path="/party-ledger-results" element={<PartyLedgerResults />} />
+          {/* <Route path="/party" element={<PartyLedger />} /> */}
+          {/* <Route path="/party-ledger-results" element={<PartyLedgerResults />} /> */}
           <Route path="/totals" element={<TotalBalance />} />
           <Route path="/stock-history" element={<StockHistory />} />
 
