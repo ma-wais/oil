@@ -24,14 +24,13 @@ const ContactManagement = () => {
   const fetchAllContacts = async () => {
     try {
       const customersResponse = await axios.get(
-        `${server}/contact?type=customer`
+        `${server}/contact`
       );
-      const partiesResponse = await axios.get(`${server}/contact?type=party`);
+      // const partiesResponse = await axios.get(`${server}/contact?type=party`);
       setContacts([
-        ...customersResponse.data.map((c) => ({ ...c, type: "customer" })),
-        ...partiesResponse.data.map((p) => ({ ...p, type: "party" })),
+        ...customersResponse.data.map((c) => ({ ...c })),
+        // ...partiesResponse.data.map((p) => ({ ...p, type: "party" })),
       ]);
-      console.log(contacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
@@ -40,7 +39,7 @@ const ContactManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${server}/contact`, { name, type });
+      await axios.post(`${server}/contact`, { name });
       setName("");
       setShowAddForm(false);
       fetchAllContacts();
