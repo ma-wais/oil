@@ -27,7 +27,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
         </p>
       </div>
         <p className="my-5"><b>Issued On :</b> {currentDate.toDateString()}</p>
-      <div className="mb-10">
+      <div className="mb-10 flex">
         <table className="w-full border-collapse bg-gray-50">
           <thead className="bg-gray-200">
             <tr className="border-b-2 border-gray-300">
@@ -72,7 +72,7 @@ const PrintableInvoicePage = ({ invoiceData }) => {
             {invoiceData.details.gojarkhanWeight}
           </p>
           <p>
-            <span className="font-semibold">New Weight:</span>{" "}
+            <span className="font-semibold">Gojar Khan Weight:</span>{" "}
             {invoiceData.details.receivedWeight}
           </p>
           <p>

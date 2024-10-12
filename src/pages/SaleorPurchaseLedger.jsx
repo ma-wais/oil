@@ -72,7 +72,7 @@ const Ledger = () => {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingDr})`,
+              label: `${c.name} (Balance: ${c.openingDr - c.openingCr})`,
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}

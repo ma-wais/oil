@@ -58,7 +58,7 @@ const UpdateStock = ({  }) => {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingDr})`
+              label: `${c.name}`
             }))}
             onChange={setSelectedParty}
             value={selectedParty}

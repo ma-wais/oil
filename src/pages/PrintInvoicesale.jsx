@@ -87,7 +87,7 @@ const PrintableInvoice = ({ invoiceData }) => {
                   {invoiceData.gojarkhanWeight}
                 </p>
                 <p>
-                  <span className="font-semibold">New Weight:</span>{" "}
+                  <span className="font-semibold">Gojar Khan Weight:</span>{" "}
                   {invoiceData.receivedWeight}
                 </p>
                 <p>

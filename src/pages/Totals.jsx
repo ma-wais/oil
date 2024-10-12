@@ -28,7 +28,7 @@ const TotalBalance = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-xl mx-auto mt-10 bg-slate-100 p-6 shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-4 text-center">Total Balance Overview</h1>
       <div className="flex justify-between items-center mb-4">
         <span className="font-semibold text-gray-700">Total Banam (Dr):</span>
