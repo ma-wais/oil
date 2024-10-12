@@ -161,8 +161,8 @@ const ContactManagement = () => {
               onChange={(e) => setBalanceType(e.target.value)}
             >
               <option value="">Select type</option>
-              <option value="cr">Credit</option>
-              <option value="dr">Debit</option>
+              <option value="cr">Jama</option>
+              <option value="dr">Banam</option>
             </select>
             <button
               onClick={handleUpdateBalance}

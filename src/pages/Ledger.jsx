@@ -66,13 +66,13 @@ const LedgerPage = () => {
           className={`px-4 py-2 mr-2 rounded ${typeFilter === 'cr' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           onClick={() => handleFilterChange('cr')}
         >
-          CR Records
+          Jama Records
         </button>
         <button
           className={`px-4 py-2 rounded ${typeFilter === 'dr' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           onClick={() => handleFilterChange('dr')}
         >
-          DR Records
+         Banam Records
         </button>
       </div>
 

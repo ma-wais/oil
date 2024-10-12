@@ -31,11 +31,11 @@ const TotalBalance = () => {
     <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-4 text-center">Total Balance Overview</h1>
       <div className="flex justify-between items-center mb-4">
-        <span className="font-semibold text-gray-700">Total Debit (Dr):</span>
+        <span className="font-semibold text-gray-700">Total Banam (Dr):</span>
         <span className="text-lg font-bold text-blue-600">₹{totalDr}</span>
       </div>
       <div className="flex justify-between items-center mb-4">
-        <span className="font-semibold text-gray-700">Total Credit (Cr):</span>
+        <span className="font-semibold text-gray-700">Total Jama (Cr):</span>
         <span className="text-lg font-bold text-red-600">₹{totalCr}</span>
       </div>
       <div className="flex justify-between items-center">
