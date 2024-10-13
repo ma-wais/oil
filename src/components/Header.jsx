@@ -77,7 +77,7 @@ const Header = ({ setToken, setUser }) => {
   return (
     <header className="bg-white shadow">
       <nav className="flex justify-between bg-gray-200">
-        <div className="flex gap ml-8"> 
+        <div className="flex flex-wrap gap ml-8"> 
           <NavButton
             icon={
               <Link to="/home">

@@ -158,13 +158,13 @@ function ProductTable() {
     setInvoiceDetails({
       ...invoiceDetails,
       customerName: selectedOption.value,
-      previousBalance: selectedContact ? selectedContact.openingDr : 0,
+      previousBalance: selectedContact.openingDr - selectedContact.openingCr,
     });
     setSelectedOption(selectedOption);
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-md rtl">
+    <div className="p-6 bg-white shadow-md rounded-md max-w-full">
       <h2 className="text-xl font-semibold mb-4">Product Sale Table</h2>
       <div className="grid grid-cols-4 gap-4 mb-4 text-right">
         <div>
@@ -210,7 +210,7 @@ function ProductTable() {
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
-            className="w-[400px]"
+            className="w-[250px] sm:w-[310px]"
           />
         </div>
       </div>
@@ -296,7 +296,7 @@ function ProductTable() {
         Add Product
       </button>
 
-      <div className="grid grid-cols-5 gap-4 mb-4 text-right">
+      <div className="flex flex-wrap gap-4 mb-4 text-right">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Total
@@ -335,7 +335,7 @@ function ProductTable() {
           <span className="text-lg">{grandTotal}</span>
         </div>
         <button
-          className="bg-blue-500 text-white rounded-md block w-40 m-4"
+          className="bg-blue-500 text-white rounded-md block py-2 w-40 m-4"
           onClick={handleSubmit}
         >
           Submit
