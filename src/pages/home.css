@@ -1,12 +1,10 @@
 .nav-button{
     position: relative;
     color: black;
-    /* border-radius: 5px; */
     padding: 10px 10px 0px 10px;
 }
 .nav-button:hover{
     background-color: rgb(216, 216, 216);
-    /* color: blue; */
     transition: all 0.5s;  
 }
 .dropdown{
@@ -23,4 +21,13 @@
 
 th, td{
     font-size: 14px;
+}
+
+@media screen and (max-width: 600px) {
+    html {
+        font-size: 12px;
+    }
+    th, td{
+        font-size: 12px;
+    }
 }

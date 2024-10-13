@@ -164,9 +164,9 @@ function ProductTable() {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-md max-w-full">
+    <div className="p-6 bg-white shadow-md rounded-md max-w-1000px">
       <h2 className="text-xl font-semibold mb-4">Product Sale Table</h2>
-      <div className="grid grid-cols-4 gap-4 mb-4 text-right">
+      <div className="grid grid-cols-4 gap-4 mb-4 text-right w-full">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Invoice No
@@ -210,7 +210,7 @@ function ProductTable() {
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
-            className="w-[250px] sm:w-[310px]"
+            className="w-[200px] sm:w-[310px]"
           />
         </div>
       </div>
@@ -247,7 +247,7 @@ function ProductTable() {
         </tbody>
       </table>
 
-      <div className="grid grid-cols-6 gap-4 mb-4 text-right">
+      <div className="grid grid-cols-5 gap-4 mb-4 text-right">
         {["Description", "Quantity", "Unit", "Rate", "Total"].map((label) => {
           const key = `input-${label}`;
 

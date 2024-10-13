@@ -253,7 +253,7 @@ function ProductTable() {
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
-            className="!w-[250px] sm:!w-[350px]"
+            className="!w-[200px] sm:!w-[350px]"
           />
         </div>
       </div>
@@ -290,7 +290,7 @@ function ProductTable() {
         </tbody>
       </table>
 
-      <div className="grid grid-cols-6 gap-4 mb-4 text-right">
+      <div className="grid grid-cols-5 gap-4 mb-4 text-right">
         {["Description", "Quantity", "Unit", "Rate", "Total"].map(
           (label, index) =>
             index === 2 ? (
