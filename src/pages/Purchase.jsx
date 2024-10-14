@@ -72,17 +72,21 @@ function ProductTable() {
     }, 0);
 
     setNetAmount(productsTotal.toFixed(2));
-    setGrandTotal(productsTotal + Number(invoiceDetails.previousBalance));
+    setGrandTotal(
+      Number(invoiceDetails.previousBalance) > 0
+        ? productsTotal + Number(invoiceDetails.previousBalance)
+        : productsTotal - Number(invoiceDetails.previousBalance)
+    );
   }, [products, invoiceDetails, invoiceDetails.previousBalance]);
 
   const addProduct = () => {
     const productWithDefaults = {
       ...productDetails,
-      rate: productDetails.rate || 0, 
+      rate: productDetails.rate || 0,
       quantity: productDetails.quantity || 0,
     };
     setProducts([...products, productWithDefaults]);
-  
+
     setProductDetails({
       description: "",
       quantity: 0,
@@ -138,7 +142,7 @@ function ProductTable() {
           Unit: "",
           rate: 0,
           total: 0,
-        }
+        },
       ]);
       fetchCurrentBillNo();
       setShowPrintableInvoice(true);
@@ -201,7 +205,7 @@ function ProductTable() {
     setInvoiceDetails({
       ...invoiceDetails,
       customerName: selectedOption.value,
-      previousBalance: (selectedContact.openingDr - selectedContact.openingCr)
+      previousBalance: selectedContact.openingDr - selectedContact.openingCr,
     });
     setSelectedOption(selectedOption);
   };
