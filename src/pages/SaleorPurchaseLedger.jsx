@@ -238,9 +238,9 @@ const LedgerResults = () => {
 
     ledgerEntries.forEach(entry => {
       if (entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) {
-        totalDebit += entry.grandTotal || entry.amount || 0;
+        totalDebit += entry.totalAmount - entry.receivedCash || entry.amount || 0;
       } else if (entry.entryType === 'purchase' || (entry.type === 'cr' && !entry.entryType)) {
-        totalCredit += entry.grandTotal || entry.amount || 0;
+        totalCredit += entry.totalAmount || entry.amount || 0;
       }
     });
 
@@ -296,13 +296,12 @@ const LedgerResults = () => {
           {ledgerEntries.map((entry, index) => {
             let amount = 0;
             if (entry.entryType === 'sale') {
-              amount = entry.grandTotal;
+              amount = entry.totalAmount - entry.receivedCash;
               runningBalance += amount;
             } else if (entry.entryType === 'purchase') {
-              amount = entry.grandTotal;
+              amount = entry.totalAmount;
               runningBalance -= amount;
             } else {
-              // Ledger record
               amount = entry.amount;
               if (entry.type === 'dr') {
                 runningBalance += amount;

@@ -101,7 +101,7 @@ const PrintableInvoice = ({ invoiceData }) => {
             <div className="w-1/3 pt-4">
               <div className="flex justify-between mb-2">
                 <span className="font-semibold">Total:</span>
-                <span>{invoiceData.netAmount || "N/A"}</span>
+                <span>{invoiceData.netAmount || invoiceData.totalAmount || "N/A"}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="font-semibold">Previous Balance:</span>

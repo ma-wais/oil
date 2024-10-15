@@ -342,7 +342,8 @@ function ProductTable() {
         </button>
       </div>
       {showPrintableInvoice && (
-        <PrintableInvoice
+        <div className="opacity-0">
+          <PrintableInvoice
           invoiceData={{
             ...invoiceDetails,
             products,
@@ -350,6 +351,7 @@ function ProductTable() {
             grandTotal,
           }}
         />
+        </div>
       )}
     </div>
   );
