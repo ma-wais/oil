@@ -56,7 +56,7 @@ const Login = ({ setToken, setUser, token }) => {
           className="w-[380px] h-[380px] max-w-md px-8 py-6 text-left bg-white shadow-lg"
           onSubmit={onSubmit}
         >
-          <h3 className="text-2xl font-bold mb-4 text-center">Login</h3>
+          <h3 className="text-2xl font-bold mb-4 text-center">Oil Kohlu</h3>
           <div className="relative mt-10">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
