@@ -66,13 +66,13 @@ const UpdateStock = ({  }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Stock to Add (kg)</label>
+          <label className="block text-gray-700">Stock to Add (mans)</label>
           <input
             type="number"
             value={stockInKg}
             onChange={(e) => setStockInKg(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Enter stock in kg"
+            placeholder="Enter stock in mans"
           />
         </div>
         <button

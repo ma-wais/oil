@@ -54,7 +54,7 @@ const StockHistory = () => {
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-left">Product Name</th>
-              <th className="py-3 px-6 text-left">Stock Added (kg)</th>
+              <th className="py-3 px-6 text-left">Stock Added (mans)</th>
               <th className="py-3 px-6 text-left">Party Name</th>
               <th className="py-3 px-6 text-left">Date</th>
               <th className="py-3 px-6 text-left">Total Stock Left</th>
