@@ -4,11 +4,12 @@ import { server } from '../App';
 
 const CrushingRecords = () => {
   const [records, setRecords] = useState([]);
-  const [filteredRecords, setFilteredRecords] = useState([]); // For storing filtered data
+  const [filteredRecords, setFilteredRecords] = useState([]);
   const [error, setError] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [seedName, setSeedName] = useState(''); // New state for seed name filter
+  const [seedName, setSeedName] = useState('');
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     fetchRecords();
@@ -31,7 +32,7 @@ const CrushingRecords = () => {
 
   const filterRecords = () => {
     if (seedName === '') {
-      setFilteredRecords(records); // If no seedName is selected, show all records
+      setFilteredRecords(records);
     } else {
       setFilteredRecords(records.filter((record) => record.seedName === seedName));
     }
@@ -40,6 +41,7 @@ const CrushingRecords = () => {
   const handleSearch = () => {
     fetchRecords();
   };
+  let currentTotal = 0;
 
   return (
     <div className="max-w-4xl mx-auto mt-8">
@@ -92,21 +94,27 @@ const CrushingRecords = () => {
           </thead>
           <tbody>
             {filteredRecords.length > 0 ? (
-              filteredRecords.map((record) => (
-                <tr key={record._id}>
+              filteredRecords.map((record) => {
+                currentTotal += record.crushingAmount;
+
+                return <tr key={record._id}>
                   <td className="border px-4 py-2">{new Date(record.date).toLocaleDateString()}</td>
                   <td className="border px-4 py-2">{record.seedName}</td>
                   <td className="border px-4 py-2">{record.crushingAmount}</td>
                   <td className="border px-4 py-2">{record.totalLeft}</td>
                 </tr>
-              ))
-            ) : (
+                })
+              ) : (
               <tr>
                 <td className="border px-4 py-2" colSpan="4">
                   No records found
                 </td>
               </tr>
             )}
+            <tr>
+              <td className="border px-4 py-2 font-bold" colSpan="2">Total</td>
+              <td className="border px-4 py-2 font-bold">{currentTotal}</td>
+            </tr>
           </tbody>
         </table>
       </div>

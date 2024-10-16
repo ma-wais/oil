@@ -104,11 +104,11 @@ const LedgerResults = () => {
         const subtractOneDay = (dateString) => {
           const date = new Date(dateString);
           date.setDate(date.getDate() - 1);
-          return date.toISOString().split('T')[0];
+          return date.toISOString().split("T")[0];
         };
-  
+
         const previousDateTo = subtractOneDay(dateFrom);
-  
+
         const [
           saleResponse,
           purchaseResponse,
@@ -116,7 +116,7 @@ const LedgerResults = () => {
           prevSaleResponse,
           prevPurchaseResponse,
           prevLedgerRecordsResponse,
-          contactResponse
+          contactResponse,
         ] = await Promise.all([
           axios.get(`${server}/sale`, {
             params: { dateFrom, dateTo, customerName: accountName },
@@ -138,13 +138,19 @@ const LedgerResults = () => {
           }),
           axios.get(`${server}/contact`, {
             params: { name: accountName },
-          })
+          }),
         ]);
 
-        const sales = saleResponse.data.map(sale => ({ ...sale, entryType: 'sale' }));
-        const purchases = purchaseResponse.data.map(purchase => ({ ...purchase, entryType: 'purchase' }));
+        const sales = saleResponse.data.map((sale) => ({
+          ...sale,
+          entryType: "sale",
+        }));
+        const purchases = purchaseResponse.data.map((purchase) => ({
+          ...purchase,
+          entryType: "purchase",
+        }));
         const ledgerRecords = ledgerRecordsResponse.data;
-        
+
         const prevSales = prevSaleResponse.data;
         const prevPurchases = prevPurchaseResponse.data;
         const prevLedgerRecords = prevLedgerRecordsResponse.data;
@@ -152,20 +158,36 @@ const LedgerResults = () => {
 
         const contact = contactResponse.data;
 
-        const allEntries = [...sales, ...purchases, ...ledgerRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+        const allEntries = [...sales, ...purchases, ...ledgerRecords].sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
         setLedgerEntries(allEntries);
         console.log(allEntries);
 
-        const prevSalesTotal = prevSales.reduce((sum, sale) => sum + (sale.grandTotal || 0), 0);
-        const prevPurchasesTotal = prevPurchases.reduce((sum, purchase) => sum + (purchase.grandTotal || 0), 0);
-        const prevLedgerRecordsTotal = prevLedgerRecords.reduce((sum, record) => {
-          if (record.type === 'dr') return sum + record.amount;
-          if (record.type === 'cr') return sum - record.amount;
-          return sum;
-        }, 0);
+        const prevSalesTotal = prevSales.reduce(
+          (sum, sale) => sum + (sale.grandTotal || 0),
+          0
+        );
+        const prevPurchasesTotal = prevPurchases.reduce(
+          (sum, purchase) => sum + (purchase.grandTotal || 0),
+          0
+        );
+        const prevLedgerRecordsTotal = prevLedgerRecords.reduce(
+          (sum, record) => {
+            if (record.type === "dr") return sum + record.amount;
+            if (record.type === "cr") return sum - record.amount;
+            return sum;
+          },
+          0
+        );
 
-        const openingBalance = (contact.openingDr || 0) - (contact.openingCr || 0);
-        const calculatedPreviousBalance = openingBalance + prevSalesTotal - prevPurchasesTotal + prevLedgerRecordsTotal;
+        const openingBalance =
+          (contact.openingDr || 0) - (contact.openingCr || 0);
+        const calculatedPreviousBalance =
+          openingBalance +
+          prevSalesTotal -
+          prevPurchasesTotal +
+          prevLedgerRecordsTotal;
         setPreviousBalance(calculatedPreviousBalance);
 
         console.log("Previous Balance:", calculatedPreviousBalance);
@@ -176,10 +198,9 @@ const LedgerResults = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [dateFrom, dateTo, accountName]);
-  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -236,10 +257,17 @@ const LedgerResults = () => {
     let totalDebit = 0;
     let totalCredit = 0;
 
-    ledgerEntries.forEach(entry => {
-      if (entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) {
-        totalDebit += entry.totalAmount - entry.receivedCash || entry.amount || 0;
-      } else if (entry.entryType === 'purchase' || (entry.type === 'cr' && !entry.entryType)) {
+    ledgerEntries.forEach((entry) => {
+      if (
+        entry.entryType === "sale" ||
+        (entry.type === "dr" && !entry.entryType)
+      ) {
+        totalDebit +=
+          entry.totalAmount - entry.receivedCash || entry.amount || 0;
+      } else if (
+        entry.entryType === "purchase" ||
+        (entry.type === "cr" && !entry.entryType)
+      ) {
         totalCredit += entry.totalAmount || entry.amount || 0;
       }
     });
@@ -250,41 +278,39 @@ const LedgerResults = () => {
   const { totalDebit, totalCredit } = calculateTotals();
 
   return (
-    <div className="p-4 max-w-[1000px] mx-auto">
-      <div className="flex justify-between">
-        <h2 className="text-2xl my-4 font-bold ">Oil Kohlu</h2>
-        <h4 className="text-2xl font-bold my-4">Account Ledger</h4>
-      </div>
-      <p className="text-right">
-        <b>From</b> {dateFrom} <b>to</b> {dateTo}
+    <div className="p-8 max-w-[1000px] mx-auto border border-gray-300 rounded-lg shadow-lg mt-10">
+      <h2 className="text-2xl ml-4 font-bold text-center underline">Oil Kohlu</h2>
+      <h4 className="text-2xl font-bold my-4 underline text-right">Account Ledger</h4>
+      <p className="text-right underline">
+        <b>From: </b> {dateFrom} <b>To: </b> {dateTo}
       </p>
       {/* Display current date and time */}
-      <p className="text-right">
+      <p className="text-right underline">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
         {new Date().toLocaleTimeString()} <br />
       </p>
-      <p>
-        <b>Name:</b> {accountName || "N/A"}
+      <p className="underline">
+        <b>Account Name:</b> {accountName || "N/A"}
       </p>
 
       {/* Ledger Table */}
       <table className="table-auto w-full mt-5">
         <thead>
           <tr>
-            <th className="border bg-slate-200 px-2 py-2">#</th>
-            <th className="border bg-slate-200 px-2 py-2">Date</th>
-            <th className="border bg-slate-200 px-2 py-1">Bill</th>
-            <th className="border bg-slate-200 px-2 py-2">Entry</th>
-            <th className="border bg-slate-200 py-2">Disc</th>
-            {/* <th className="border bg-slate-200 px-2 py-2">Name</th> */}
-            <th className="border bg-slate-200 px-2 py-2">Banam</th>
-            <th className="border bg-slate-200 px-2 py-2">Jama</th>
-            <th colspan="2" className="border bg-slate-200 py-2">
+            <th className="border bg-gray-300 px-2 py-2">#</th>
+            <th className="border bg-gray-300 px-2 py-2">Date</th>
+            <th className="border bg-gray-300 px-2 py-1">Bill</th>
+            <th className="border bg-gray-300 px-2 py-2">Entry</th>
+            <th className="border bg-gray-300 py-2">Disc</th>
+            {/* <th className="border bg-gray-300 px-2 py-2">Name</th> */}
+            <th className="border bg-gray-300 px-2 py-2">Banam</th>
+            <th className="border bg-gray-300 px-2 py-2">Jama</th>
+            <th colspan="2" className="border bg-gray-300 py-2">
               Remaining
             </th>
           </tr>
           <tr>
-            <th className="border px-2 py-2 text-right" colSpan={6}>
+            <th className="border px-2 py-2 text-right underline" colSpan={6}>
               Previous
             </th>
             <th className="border px-2 py-2" colSpan={2}>
@@ -295,17 +321,17 @@ const LedgerResults = () => {
         <tbody>
           {ledgerEntries.map((entry, index) => {
             let amount = 0;
-            if (entry.entryType === 'sale') {
+            if (entry.entryType === "sale") {
               amount = entry.totalAmount - entry.receivedCash;
               runningBalance += amount;
-            } else if (entry.entryType === 'purchase') {
+            } else if (entry.entryType === "purchase") {
               amount = entry.totalAmount;
               runningBalance -= amount;
             } else {
               amount = entry.amount;
-              if (entry.type === 'dr') {
+              if (entry.type === "dr") {
                 runningBalance += amount;
-              } else if (entry.type === 'cr') {
+              } else if (entry.type === "cr") {
                 runningBalance -= amount;
               }
             }
@@ -319,36 +345,55 @@ const LedgerResults = () => {
                 <td
                   className="border px-2 py-1"
                   onClick={() => {
-                    if (entry.entryType === 'sale' || entry.entryType === 'purchase') {
+                    if (
+                      entry.entryType === "sale" ||
+                      entry.entryType === "purchase"
+                    ) {
                       openPrintableInvoice(entry);
                     }
                   }}
-                  style={{ cursor: entry.entryType === 'sale' || entry.entryType === 'purchase' ? "pointer" : "default" }}
+                  style={{
+                    cursor:
+                      entry.entryType === "sale" ||
+                      entry.entryType === "purchase"
+                        ? "pointer"
+                        : "default",
+                  }}
                 >
                   {entry.billNo || entry.invoiceNumber || "N/A"}
                 </td>
                 <td className="border px-2 py-2">
                   {entry.entryType && entry.entryType}
-                  {entry.type === 'dr' && 'Banam'}
-                  {entry.type === 'cr' && 'Jama'}
+                  {entry.type === "dr" && "Banam"}
+                  {entry.type === "cr" && "Jama"}
                 </td>
-                <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
-                  {entry.items && entry.items.map((item, index) => (
-                    <span key={index}>
-                      {item.description}&nbsp;&nbsp;
-                      {/* {item.quantity}&nbsp;
+                <td
+                  className="border px-2 py-1"
+                  style={{ whiteSpace: "nowrap", fontSize: "12px" }}
+                >
+                  {entry.items &&
+                    entry.items.map((item, index) => (
+                      <span key={index}>
+                        {item.description}&nbsp;&nbsp;
+                        {/* {item.quantity}&nbsp;
                       {item.weight}&nbsp;{item.rate}@&nbsp;
                       {item.total} */}
-                      {index < entry.items.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
+                        {index < entry.items.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
                   {!entry.items && entry.description}
                 </td>
                 <td className="border px-2 py-2">
-                  {(entry.entryType === 'sale' || (entry.type === 'dr' && !entry.entryType)) ? amount.toFixed(2) : "0.00"}
+                  {entry.entryType === "sale" ||
+                  (entry.type === "dr" && !entry.entryType)
+                    ? amount.toFixed(2)
+                    : "0.00"}
                 </td>
                 <td className="border px-2 py-2">
-                  {(entry.entryType === 'purchase' || (entry.type === 'cr' && !entry.entryType)) ? amount.toFixed(2) : "0.00"}
+                  {entry.entryType === "purchase" ||
+                  (entry.type === "cr" && !entry.entryType)
+                    ? amount.toFixed(2)
+                    : "0.00"}
                 </td>
                 <td className="border px-2 py-2">
                   {runningBalance.toFixed(2)}
@@ -363,8 +408,21 @@ const LedgerResults = () => {
           <tr className="border px-2 py-2 font-bold text-right" colspan={9}>
             {" "}
           </tr>
+          <tr className="bg-gray-300">
+            <td
+              colspan={2}
+              className="border px-2 py-2 font-bold underline"
+            ></td>
+            <td
+              colspan={7}
+              className="border px-2 py-2 font-bold underline"
+            ></td>
+          </tr>
           <tr>
-            <td className="border px-2 py-2 font-bold text-right" colSpan={5}>
+            <td
+              className="border px-2 py-2 font-bold text-right underline"
+              colSpan={5}
+            >
               Total
             </td>
             <td className="border px-2 py-2 font-bold">
@@ -377,12 +435,24 @@ const LedgerResults = () => {
               {runningBalance.toFixed(2)}
             </td>
           </tr>
-          <tr colspan={9}></tr>
+          {/* <tr className="">
+            <td
+              colspan={2}
+              className="border px-2 py-2 font-bold underline"
+            ></td>
+            <td
+              colspan={7}
+              className="border px-2 py-2 font-bold underline"
+            ></td>
+          </tr> */}
           <tr>
-            <td colspan={8} className="border bg-slate-200 px-2 py-2 font-bold">
+            <td
+              colspan={8}
+              className="border bg-gray-300 px-2 py-2 font-bold underline"
+            >
               Current Balance
             </td>
-            <td rowSpan={1} className="border bg-slate-200 px-2 py-2 font-bold">
+            <td rowSpan={1} className="border bg-gray-300 px-2 py-2 font-bold">
               {runningBalance.toFixed(2)}
             </td>
           </tr>

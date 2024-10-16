@@ -5,7 +5,7 @@ import { server } from '../App';
 const LedgerPage = () => {
   const [ledgerRecords, setLedgerRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
-  const [typeFilter, setTypeFilter] = useState('all'); // 'all', 'cr', 'dr'
+  const [typeFilter, setTypeFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
@@ -50,11 +50,19 @@ const LedgerPage = () => {
     ledgerRecords.filter(record => typeFilter === 'all' || record.type === typeFilter).length / recordsPerPage
   );
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${server}/ledgerrecord/${id}`);
+      fetchLedgerRecords();
+    } catch (error) {
+      console.error('Error deleting ledger record:', error);
+    }
+  };
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Ledger Records</h1>
 
-      {/* Filter Buttons */}
       <div className="mb-4">
         <button
           className={`px-4 py-2 mr-2 rounded ${typeFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
@@ -76,7 +84,6 @@ const LedgerPage = () => {
         </button>
       </div>
 
-      {/* Ledger Table */}
       <table className="w-full border-collapse border border-gray-300 my-4">
         <thead>
           <tr className="bg-gray-100">
@@ -85,6 +92,7 @@ const LedgerPage = () => {
             <th className="border border-gray-300 p-2">Description</th>
             <th className="border border-gray-300 p-2">Bill No</th>
             <th className="border border-gray-300 p-2">Date</th>
+            <th className="border border-gray-300 p-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -96,6 +104,12 @@ const LedgerPage = () => {
               <td className="border border-gray-300 p-2">{record.billNo}</td>
               <td className="border border-gray-300 p-2">
                 {new Date(record.date).toLocaleDateString()}
+              </td>
+              <td className="border border-gray-300 p-2 w-10"
+                onClick={() => handleDelete(record._id)}>
+                <button className="bg-red-500 text-white px-4 py-2 rounded">
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
