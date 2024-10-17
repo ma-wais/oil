@@ -140,6 +140,7 @@ const LedgerResults = () => {
             params: { name: accountName },
           }),
         ]);
+        console.log(ledgerRecordsResponse);
 
         const sales = saleResponse.data.map((sale) => ({
           ...sale,
@@ -279,12 +280,15 @@ const LedgerResults = () => {
 
   return (
     <div className="p-8 max-w-[1000px] mx-auto border border-gray-300 rounded-lg shadow-lg mt-10">
-      <h2 className="text-2xl ml-4 font-bold text-center underline">Oil Kohlu</h2>
-      <h4 className="text-2xl font-bold my-4 underline text-right">Account Ledger</h4>
+      <h2 className="text-2xl ml-4 font-bold text-center underline">
+        Oil Kohlu
+      </h2>
+      <h4 className="text-2xl font-bold my-4 underline text-right">
+        Account Ledger
+      </h4>
       <p className="text-right underline">
         <b>From: </b> {dateFrom} <b>To: </b> {dateTo}
       </p>
-      {/* Display current date and time */}
       <p className="text-right underline">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
         {new Date().toLocaleTimeString()} <br />
@@ -293,7 +297,6 @@ const LedgerResults = () => {
         <b>Account Name:</b> {accountName || "N/A"}
       </p>
 
-      {/* Ledger Table */}
       <table className="table-auto w-full mt-5">
         <thead>
           <tr>
@@ -410,7 +413,7 @@ const LedgerResults = () => {
           </tr>
           <tr className="bg-gray-300">
             <td
-              colspan={2}
+              colSpan={2}
               className="border px-2 py-2 font-bold underline"
             ></td>
             <td

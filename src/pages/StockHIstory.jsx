@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { server } from '../App';
-import Select from 'react-select';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { server } from "../App";
+import Select from "react-select";
 
 const StockHistory = () => {
   const [stockUpdates, setStockUpdates] = useState([]);
-  const [productName, setProductName] = useState('');
+  const [productName, setProductName] = useState("");
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -16,21 +16,26 @@ const StockHistory = () => {
   const fetchStockUpdates = async () => {
     try {
       const response = await axios.get(`${server}/stock-updates`, {
-        params: productName ? { productName } : {}
+        params: productName ? { productName } : {},
       });
       setStockUpdates(response.data);
       console.log(response.data);
     } catch (error) {
-      console.error('Error fetching stock updates:', error);
+      console.error("Error fetching stock updates:", error);
     }
   };
 
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${server}/products`);
-      setProducts(response.data.map(product => ({ value: product.name, label: product.name })));
+      setProducts(
+        response.data.map((product) => ({
+          value: product.name,
+          label: product.name,
+        }))
+      );
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     }
   };
 
@@ -42,8 +47,8 @@ const StockHistory = () => {
         <label className="block text-gray-700 mb-2">Filter by Product</label>
         <Select
           options={products}
-          onChange={(selected) => setProductName(selected?.value || '')}
-          value={products.find(p => p.value === productName)}
+          onChange={(selected) => setProductName(selected?.value || "")}
+          value={products.find((p) => p.value === productName)}
           isClearable
           className="w-full"
         />
@@ -66,7 +71,9 @@ const StockHistory = () => {
                 <td className="py-3 px-6">{update.productName}</td>
                 <td className="py-3 px-6">{update.stockInKg}</td>
                 <td className="py-3 px-6">{update.partyName}</td>
-                <td className="py-3 px-6">{new Date(update.date).toLocaleDateString()}</td>
+                <td className="py-3 px-6">
+                  {new Date(update.date).toLocaleDateString()}
+                </td>
                 <td className="py-3 px-6">{update.totalLeft}</td>
               </tr>
             ))}
