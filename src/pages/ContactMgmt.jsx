@@ -23,9 +23,7 @@ const ContactManagement = () => {
 
   const fetchAllContacts = async () => {
     try {
-      const customersResponse = await axios.get(
-        `${server}/contact`
-      );
+      const customersResponse = await axios.get(`${server}/contact`);
       // const partiesResponse = await axios.get(`${server}/contact?type=party`);
       setContacts([
         ...customersResponse.data.map((c) => ({ ...c })),
@@ -49,7 +47,8 @@ const ContactManagement = () => {
   };
 
   const handleUpdateBalance = async () => {
-    if (!selectedContact) return alert("Please select a contact");
+    if (!selectedContact || !amount || !balanceType || !date || !description)
+      return alert("Please fill in all fields");
     const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
     const nextBillNo = nextBillResponse.data.nextBillNo;
     setBillNo(nextBillNo);
@@ -264,7 +263,9 @@ const ContactManagement = () => {
               <td className="border border-gray-300 p-2">
                 {contact.openingDr || 0}
               </td>
-              <td className="border border-gray-300 p-2">{contact.openingCr || 0}</td>
+              <td className="border border-gray-300 p-2">
+                {contact.openingCr || 0}
+              </td>
               <td className="border border-gray-300 p-2">
                 <button
                   onClick={() => handleEdit(contact)}

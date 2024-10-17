@@ -116,7 +116,10 @@ function ProductTable() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if(!invoiceDetails.date || !invoiceDetails.customerName){
+      alert("Please enter date and customer name");
+      return;
+    }
     const nextBillResponse = await axios.get(`${server}/purchase/nextBillNo`);
     const nextBillNo = nextBillResponse.data.nextBillNo;
     setInvoiceDetails((prevDetails) => ({

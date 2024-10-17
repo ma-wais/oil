@@ -140,7 +140,7 @@ const LedgerResults = () => {
             params: { name: accountName },
           }),
         ]);
-        console.log(ledgerRecordsResponse);
+        console.log(saleResponse.data, purchaseResponse.data, prevPurchaseResponse.data, prevSaleResponse.data);
 
         const sales = saleResponse.data.map((sale) => ({
           ...sale,
