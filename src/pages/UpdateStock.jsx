@@ -1,38 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { server } from '../App';
-import Select from 'react-select';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { server } from "../App";
+import Select from "react-select";
 
-const UpdateStock = ({  }) => {
-  const [product, setProduct] = useState('');
-  const [stockInKg, setStockInKg] = useState('');
-  const [message, setMessage] = useState('');
+const UpdateStock = ({}) => {
+  const [product, setProduct] = useState("");
+  const [stockInKg, setStockInKg] = useState("");
+  const [message, setMessage] = useState("");
   const [selectedParty, setSelectedParty] = useState(null);
-  const [contacts, setContacts] = useState([]);
+  const [date, setDate] = useState("");
+  // const [contacts, setContacts] = useState([]);
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+  // useEffect(() => {
+  //   fetchContacts();
+  // }, []);
 
-  const fetchContacts = async () => {
-    try {
-      const response = await axios.get(`${server}/contact`);
-      setContacts(response.data);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-    }
-  };
+  // const fetchContacts = async () => {
+  //   try {
+  //     const response = await axios.get(`${server}/contact`);
+  //     setContacts(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching contacts:", error);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.put(`${server}/stock/${product}`, {
         stockInKg,
-        partyName: selectedParty?.value,
+        partyName: selectedParty,
+        date,
       });
-      setMessage('Stock updated successfully');
+      setMessage("Stock updated successfully");
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Error updating stock');
+      setMessage(error.response?.data?.message || "Error updating stock");
     }
   };
 
@@ -42,7 +44,7 @@ const UpdateStock = ({  }) => {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700">Product</label>
-           <select
+          <select
             value={product}
             onChange={(e) => setProduct(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
@@ -54,8 +56,17 @@ const UpdateStock = ({  }) => {
           </select>
         </div>
         <div className="mb-4">
+          <label className="block text-gray-700">Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          />
+        </div>
+        <div className="mb-4">
           <label className="block text-gray-700">Party Name</label>
-          <Select
+          {/* <Select
             options={contacts.map((c) => ({
               value: c.name,
               label: `${c.name}`
@@ -63,6 +74,13 @@ const UpdateStock = ({  }) => {
             onChange={setSelectedParty}
             value={selectedParty}
             className="w-full"
+          /> */}
+          <input
+            type="text"
+            placeholder="Enter party"
+            name="party"
+            onChange={(e) => setSelectedParty(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
           />
         </div>
         <div className="mb-4">
