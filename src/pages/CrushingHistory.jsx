@@ -9,7 +9,7 @@ const CrushingRecords = () => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [seedName, setSeedName] = useState('');
-  const [total, setTotal] = useState(0);
+  // const [total, setTotal] = useState(0);
 
   useEffect(() => {
     fetchRecords();

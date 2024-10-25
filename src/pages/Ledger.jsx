@@ -54,7 +54,9 @@ const LedgerPage = () => {
     try {
       await axios.delete(`${server}/ledgerrecord/${id}`);
       fetchLedgerRecords();
+      alert('Ledger record deleted successfully');
     } catch (error) {
+      alert('Error deleting ledger record');
       console.error('Error deleting ledger record:', error);
     }
   };

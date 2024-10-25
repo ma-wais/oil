@@ -30,8 +30,10 @@ const PurchaseInvoiceList = () => {
     try {
       await axios.delete(`${server}/purchase/${id}`);
       fetchInvoices();
+      alert("Invoice deleted successfully");
     } catch (error) {
-      console.error("Error deleting invoice:", error);
+      alert("Error deleting invoice");
+      console.error(error);
     }
   };
   
