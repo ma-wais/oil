@@ -10,6 +10,7 @@ const Login = ({ setToken, setUser, token }) => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -17,13 +18,20 @@ const Login = ({ setToken, setUser, token }) => {
     }
   }, [token, navigate]);
 
-  const { email, password } = formData;
+  // const { email, password } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (!formData.email || !formData.password) {
+      alert("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios.post(
         `${server}/login`,
@@ -37,10 +45,11 @@ const Login = ({ setToken, setUser, token }) => {
       sessionStorage.setItem("token", token);
       setToken(token);
       setUser(response.data.user);
-
+      setLoading(false);
       navigate("/home");
     } catch (error) {
-      console.error("Registration failed", error);
+      setLoading(false);
+      console.error("Login failed", error);
     }
   };
 
@@ -99,8 +108,9 @@ const Login = ({ setToken, setUser, token }) => {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white mt-4 font-bold py-2 px-4 rounded"
             type="submit"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
