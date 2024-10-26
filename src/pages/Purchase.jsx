@@ -145,6 +145,8 @@ function ProductTable() {
         },
       ]);
       fetchCurrentBillNo();
+      fetchContacts();
+      setSelectedOption(null);
       setShowPrintableInvoice(true);
     } catch (error) {
       console.error(error);

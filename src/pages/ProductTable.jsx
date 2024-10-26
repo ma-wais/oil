@@ -148,6 +148,9 @@ function ProductTable() {
       });
       setProducts([]);
       fetchCurrentBillNo();
+      fetchContacts();
+      setSelectedOption(null);
+      setReceivedCash(0);
     } catch (error) {
       console.error(error);
       alert("Invoice created but failed to print");
@@ -329,6 +332,7 @@ function ProductTable() {
           <input
             type="number"
             min={0}
+            value={receivedCash}
             className="w-full p-2 border border-gray-300 rounded-md"
             onChange={(e) => setReceivedCash(e.target.value)}
           />

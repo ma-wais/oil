@@ -32,6 +32,12 @@ const Ledger = () => {
     setSelectedOption(selectedOption);
   };
 
+  const calculateBalance = (contact) => {
+    const dr = parseFloat(contact.openingDr || 0);
+    const cr = parseFloat(contact.openingCr || 0);
+    return dr - cr;
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (!dateFrom || !dateTo || !name) {
@@ -72,7 +78,7 @@ const Ledger = () => {
           <Select
             options={contacts.map((c) => ({
               value: c.name,
-              label: `${c.name} (Balance: ${c.openingDr - c.openingCr})`,
+              label: `${c.name} (Balance: ${calculateBalance(c).toFixed(2)})`,
             }))}
             onChange={handleCustomerChange}
             value={selectedOption}
@@ -109,89 +115,38 @@ const LedgerResults = () => {
 
         const previousDateTo = subtractOneDay(dateFrom);
 
-        const [
-          saleResponse,
-          purchaseResponse,
-          ledgerRecordsResponse,
-          prevSaleResponse,
-          prevPurchaseResponse,
-          prevLedgerRecordsResponse,
-          contactResponse,
-        ] = await Promise.all([
-          axios.get(`${server}/sale`, {
-            params: { dateFrom, dateTo, customerName: accountName },
-          }),
-          axios.get(`${server}/ledger`, {
-            params: { dateFrom, dateTo, partyName: accountName },
-          }),
-          axios.get(`${server}/ledgerrecords`, {
-            params: { dateFrom, dateTo, customerName: accountName },
-          }),
-          axios.get(`${server}/sale`, {
-            params: { dateTo: previousDateTo, customerName: accountName },
-          }),
-          axios.get(`${server}/ledger`, {
-            params: { dateTo: previousDateTo, partyName: accountName },
-          }),
-          axios.get(`${server}/ledgerrecords`, {
-            params: { dateTo: previousDateTo, customerName: accountName },
-          }),
-          axios.get(`${server}/contact`, {
-            params: { name: accountName },
-          }),
-        ]);
-        console.log(saleResponse.data, purchaseResponse.data, prevPurchaseResponse.data, prevSaleResponse.data);
+        const [ledgerRecordsResponse, prevLedgerRecordsResponse, contactResponse] = 
+          await Promise.all([
+            axios.get(`${server}/ledgerrecords`, {
+              params: { dateFrom, dateTo, customerName: accountName }
+            }),
+            axios.get(`${server}/ledgerrecords`, {
+              params: { dateTo: previousDateTo, customerName: accountName }
+            }),
+            axios.get(`${server}/contact`, {
+              params: { name: accountName }
+            })
+          ]);
 
-        const sales = saleResponse.data.map((sale) => ({
-          ...sale,
-          entryType: "sale",
-        }));
-        const purchases = purchaseResponse.data.map((purchase) => ({
-          ...purchase,
-          entryType: "purchase",
-        }));
         const ledgerRecords = ledgerRecordsResponse.data;
-
-        const prevSales = prevSaleResponse.data;
-        const prevPurchases = prevPurchaseResponse.data;
         const prevLedgerRecords = prevLedgerRecordsResponse.data;
-        // console.log(prevSales, prevPurchases, prevLedgerRecords);
-
         const contact = contactResponse.data;
 
-        const allEntries = [...sales, ...purchases, ...ledgerRecords].sort(
+        const allEntries = [...ledgerRecords].sort(
           (a, b) => new Date(a.date) - new Date(b.date)
         );
         setLedgerEntries(allEntries);
-        console.log(allEntries);
 
-        const prevSalesTotal = prevSales.reduce(
-          (sum, sale) => sum + (sale.grandTotal || 0),
-          0
-        );
-        const prevPurchasesTotal = prevPurchases.reduce(
-          (sum, purchase) => sum + (purchase.grandTotal || 0),
-          0
-        );
-        const prevLedgerRecordsTotal = prevLedgerRecords.reduce(
-          (sum, record) => {
-            if (record.type === "dr") return sum + record.amount;
-            if (record.type === "cr") return sum - record.amount;
-            return sum;
-          },
-          0
-        );
+        const prevLedgerRecordsTotal = prevLedgerRecords.reduce((sum, record) => {
+          const amount = parseFloat(record.amount || 0);
+          return record.type === "dr" ? sum + amount : sum - amount;
+        }, 0);
 
-        const openingBalance =
-          (contact.openingDr || 0) - (contact.openingCr || 0);
-        const calculatedPreviousBalance =
-          openingBalance +
-          prevSalesTotal -
-          prevPurchasesTotal +
-          prevLedgerRecordsTotal;
+        const openingBalance = parseFloat(contact.openingDr || 0) - parseFloat(contact.openingCr || 0);
+        const calculatedPreviousBalance = openingBalance + prevLedgerRecordsTotal;
+        
         setPreviousBalance(calculatedPreviousBalance);
 
-        console.log("Previous Balance:", calculatedPreviousBalance);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");
@@ -209,8 +164,6 @@ const LedgerResults = () => {
   let runningBalance = previousBalance;
 
   const openPrintableInvoice = (invoiceData) => {
-    console.log("Invoice data being passed to PrintableInvoice:", invoiceData);
-
     const printWindow = window.open("", "_blank");
     printWindow.document.write(`
       <html>
@@ -228,23 +181,14 @@ const LedgerResults = () => {
     printWindow.document.close();
 
     const renderAndPrint = () => {
-      try {
-        ReactDOM.render(
-          <PrintableInvoice invoiceData={invoiceData} />,
-          printWindow.document.getElementById("print-root"),
-          () => {
-            console.log("PrintableInvoice rendered in new window");
-            printWindow.focus();
-            setTimeout(() => {
-              console.log("Attempting to print");
-              printWindow.print();
-            }, 1000);
-          }
-        );
-      } catch (error) {
-        console.error("Error rendering PrintableInvoice:", error);
-        printWindow.document.body.innerHTML = `<h1>Error rendering invoice: ${error.message}</h1>`;
-      }
+      ReactDOM.render(
+        <PrintableInvoice invoiceData={invoiceData} />,
+        printWindow.document.getElementById("print-root"),
+        () => {
+          printWindow.focus();
+          setTimeout(() => printWindow.print(), 1000);
+        }
+      );
     };
 
     if (printWindow.React && printWindow.ReactDOM) {
@@ -255,43 +199,29 @@ const LedgerResults = () => {
   };
 
   const calculateTotals = () => {
-    let totalDebit = 0;
-    let totalCredit = 0;
-
-    ledgerEntries.forEach((entry) => {
-      if (
-        entry.entryType === "sale" ||
-        (entry.type === "dr" && !entry.entryType)
-      ) {
-        totalDebit +=
-          entry.totalAmount - entry.receivedCash || entry.amount || 0;
-      } else if (
-        entry.entryType === "purchase" ||
-        (entry.type === "cr" && !entry.entryType)
-      ) {
-        totalCredit += entry.totalAmount || entry.amount || 0;
+    return ledgerEntries.reduce((totals, entry) => {
+      const amount = parseFloat(entry.amount || 0);
+      if (entry.type === "dr") {
+        totals.totalDebit += amount;
+      } else if (entry.type === "cr") {
+        totals.totalCredit += amount;
       }
-    });
-
-    return { totalDebit, totalCredit };
+      return totals;
+    }, { totalDebit: 0, totalCredit: 0 });
   };
 
   const { totalDebit, totalCredit } = calculateTotals();
 
   return (
     <div className="p-8 max-w-[1000px] mx-auto border border-gray-300 rounded-lg shadow-lg mt-10">
-      <h2 className="text-2xl ml-4 font-bold text-center underline">
-        Oil Kohlu
-      </h2>
-      <h4 className="text-2xl font-bold my-4 underline text-right">
-        Account Ledger
-      </h4>
+      <h2 className="text-2xl ml-4 font-bold text-center underline">Oil Kohlu</h2>
+      <h4 className="text-2xl font-bold my-4 underline text-right">Account Ledger</h4>
       <p className="text-right underline">
         <b>From: </b> {dateFrom} <b>To: </b> {dateTo}
       </p>
       <p className="text-right underline">
         <b>Current Date and Time:</b> {new Date().toLocaleDateString()}{" "}
-        {new Date().toLocaleTimeString()} <br />
+        {new Date().toLocaleTimeString()}
       </p>
       <p className="underline">
         <b>Account Name:</b> {accountName || "N/A"}
@@ -304,39 +234,23 @@ const LedgerResults = () => {
             <th className="border bg-gray-300 px-2 py-2">Date</th>
             <th className="border bg-gray-300 px-2 py-1">Bill</th>
             <th className="border bg-gray-300 px-2 py-2">Entry</th>
-            <th className="border bg-gray-300 py-2">Disc</th>
-            {/* <th className="border bg-gray-300 px-2 py-2">Name</th> */}
+            <th className="border bg-gray-300 py-2">Description</th>
             <th className="border bg-gray-300 px-2 py-2">Banam</th>
             <th className="border bg-gray-300 px-2 py-2">Jama</th>
-            <th colspan="2" className="border bg-gray-300 py-2">
-              Remaining
-            </th>
+            <th colSpan="2" className="border bg-gray-300 py-2">Remaining</th>
           </tr>
           <tr>
-            <th className="border px-2 py-2 text-right underline" colSpan={6}>
-              Previous
-            </th>
-            <th className="border px-2 py-2" colSpan={2}>
-              {previousBalance}
-            </th>
+            <th className="border px-2 py-2 text-right underline" colSpan={6}>Previous</th>
+            <th className="border px-2 py-2" colSpan={2}>{previousBalance.toFixed(2)}</th>
           </tr>
         </thead>
         <tbody>
           {ledgerEntries.map((entry, index) => {
-            let amount = 0;
-            if (entry.entryType === "sale") {
-              amount = entry.totalAmount - entry.receivedCash;
+            const amount = parseFloat(entry.amount || 0);
+            if (entry.type === "dr") {
               runningBalance += amount;
-            } else if (entry.entryType === "purchase") {
-              amount = entry.totalAmount;
+            } else if (entry.type === "cr") {
               runningBalance -= amount;
-            } else {
-              amount = entry.amount;
-              if (entry.type === "dr") {
-                runningBalance += amount;
-              } else if (entry.type === "cr") {
-                runningBalance -= amount;
-              }
             }
 
             return (
@@ -346,61 +260,28 @@ const LedgerResults = () => {
                   {new Date(entry.date).toLocaleDateString()}
                 </td>
                 <td
-                  className="border px-2 py-1"
+                  className="border px-2 py-1 cursor-pointer"
                   onClick={() => {
-                    if (
-                      entry.entryType === "sale" ||
-                      entry.entryType === "purchase"
-                    ) {
+                    if (entry.billNo || entry.invoiceNumber) {
                       openPrintableInvoice(entry);
                     }
-                  }}
-                  style={{
-                    cursor:
-                      entry.entryType === "sale" ||
-                      entry.entryType === "purchase"
-                        ? "pointer"
-                        : "default",
                   }}
                 >
                   {entry.billNo || entry.invoiceNumber || "N/A"}
                 </td>
                 <td className="border px-2 py-2">
-                  {entry.entryType && entry.entryType}
-                  {entry.type === "dr" && "Banam"}
-                  {entry.type === "cr" && "Jama"}
+                  {entry.type === "dr" ? "Banam" : "Jama"}
                 </td>
-                <td
-                  className="border px-2 py-1"
-                  style={{ whiteSpace: "nowrap", fontSize: "12px" }}
-                >
-                  {entry.items &&
-                    entry.items.map((item, index) => (
-                      <span key={index}>
-                        {item.description}&nbsp;&nbsp;
-                        {/* {item.quantity}&nbsp;
-                      {item.weight}&nbsp;{item.rate}@&nbsp;
-                      {item.total} */}
-                        {index < entry.items.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
-                  {!entry.items && entry.description}
+                <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
+                  {entry.description}
                 </td>
                 <td className="border px-2 py-2">
-                  {entry.entryType === "sale" ||
-                  (entry.type === "dr" && !entry.entryType)
-                    ? amount.toFixed(2)
-                    : "0.00"}
+                  {entry.type === "dr" ? amount.toFixed(2) : "0.00"}
                 </td>
                 <td className="border px-2 py-2">
-                  {entry.entryType === "purchase" ||
-                  (entry.type === "cr" && !entry.entryType)
-                    ? amount.toFixed(2)
-                    : "0.00"}
+                  {entry.type === "cr" ? amount.toFixed(2) : "0.00"}
                 </td>
-                <td className="border px-2 py-2">
-                  {runningBalance.toFixed(2)}
-                </td>
+                <td className="border px-2 py-2">{runningBalance.toFixed(2)}</td>
                 <td className="border px-2 py-2">
                   {runningBalance > 0 ? "Banam" : "Jama"}
                 </td>
@@ -408,54 +289,17 @@ const LedgerResults = () => {
             );
           })}
 
-          <tr className="border px-2 py-2 font-bold text-right" colspan={9}>
-            {" "}
-          </tr>
           <tr className="bg-gray-300">
-            <td
-              colSpan={2}
-              className="border px-2 py-2 font-bold underline"
-            ></td>
-            <td
-              colspan={7}
-              className="border px-2 py-2 font-bold underline"
-            ></td>
+            <td colSpan={5} className="border px-2 py-2 font-bold text-right underline">Total</td>
+            <td className="border px-2 py-2 font-bold">{totalDebit.toFixed(2)}</td>
+            <td className="border px-2 py-2 font-bold">{totalCredit.toFixed(2)}</td>
+            <td className="border px-2 py-2 font-bold" colSpan={2}>{runningBalance.toFixed(2)}</td>
           </tr>
           <tr>
-            <td
-              className="border px-2 py-2 font-bold text-right underline"
-              colSpan={5}
-            >
-              Total
-            </td>
-            <td className="border px-2 py-2 font-bold">
-              {totalDebit.toFixed(2)}
-            </td>
-            <td className="border px-2 py-2 font-bold">
-              {totalCredit.toFixed(2)}
-            </td>
-            <td className="border px-2 py-2 font-bold" colSpan={2}>
-              {runningBalance.toFixed(2)}
-            </td>
-          </tr>
-          {/* <tr className="">
-            <td
-              colspan={2}
-              className="border px-2 py-2 font-bold underline"
-            ></td>
-            <td
-              colspan={7}
-              className="border px-2 py-2 font-bold underline"
-            ></td>
-          </tr> */}
-          <tr>
-            <td
-              colspan={8}
-              className="border bg-gray-300 px-2 py-2 font-bold underline"
-            >
+            <td colSpan={8} className="border bg-gray-300 px-2 py-2 font-bold underline">
               Current Balance
             </td>
-            <td rowSpan={1} className="border bg-gray-300 px-2 py-2 font-bold">
+            <td className="border bg-gray-300 px-2 py-2 font-bold">
               {runningBalance.toFixed(2)}
             </td>
           </tr>
