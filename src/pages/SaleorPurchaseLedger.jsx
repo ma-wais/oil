@@ -136,6 +136,7 @@ const LedgerResults = () => {
           (a, b) => new Date(a.date) - new Date(b.date)
         );
         setLedgerEntries(allEntries);
+        console.log(allEntries);
 
         const prevLedgerRecordsTotal = prevLedgerRecords.reduce((sum, record) => {
           const amount = parseFloat(record.amount || 0);
@@ -260,10 +261,14 @@ const LedgerResults = () => {
                   {new Date(entry.date).toLocaleDateString()}
                 </td>
                 <td
-                  className="border px-2 py-1 cursor-pointer"
+                  className="border px-2 py-1"
+                  style={entry.saleInvoice || entry.purchaseInvoice ? { cursor: "pointer" } : null}
                   onClick={() => {
-                    if (entry.billNo || entry.invoiceNumber) {
-                      openPrintableInvoice(entry);
+                    if (entry.saleInvoice) {
+                      openPrintableInvoice(entry.saleInvoice);
+                    }
+                    if (entry.purchaseInvoice) {
+                      openPrintableInvoice(entry.purchaseInvoice);
                     }
                   }}
                 >
