@@ -39,6 +39,17 @@ const StockHistory = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${server}/stock/${id}`);
+      fetchStockUpdates();
+      alert("Stock update deleted successfully");
+    } catch (error) {
+      alert("Error deleting stock update");
+      console.error("Error deleting stock update:", error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Stock Update History</h2>
@@ -63,6 +74,7 @@ const StockHistory = () => {
               <th className="py-3 px-6 text-left">Party Name</th>
               <th className="py-3 px-6 text-left">Date</th>
               <th className="py-3 px-6 text-left">Total Stock Left</th>
+              <th className="py-3 px-6 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="text-gray-700 text-sm">
@@ -75,6 +87,14 @@ const StockHistory = () => {
                   {new Date(update.date).toLocaleDateString()}
                 </td>
                 <td className="py-3 px-6">{update.totalLeft}</td>
+                <td className="py-3 px-6">
+                  <button
+                    className="text-red-500"
+                    onClick={() => handleDelete(update._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
