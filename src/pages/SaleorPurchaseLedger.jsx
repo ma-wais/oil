@@ -278,7 +278,29 @@ const LedgerResults = () => {
                   {entry.type === "dr" ? "Banam" : "Jama"}
                 </td>
                 <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
-                  {entry.description}
+                  {!entry.saleInvoice && !entry.purchaseInvoice && entry.description}
+                  {entry.saleInvoice && (
+                    <div style={{ fontSize: "10px" }}>
+                      {
+                        entry.saleInvoice.items.map((item, index) => (
+                          <div key={index}>
+                           {item.description && (item.description + ", ")} {item.quantity}, {item.total}
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )}
+                  {entry.purchaseInvoice && (
+                    <div style={{ fontSize: "10px" }}>
+                      {
+                        entry.purchaseInvoice.items.map((item, index) => (
+                          <div key={index}>
+                           {item.description && (item.description + ", ")} {item.quantity}, {item.total}
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )}
                 </td>
                 <td className="border px-2 py-2">
                   {entry.type === "dr" ? amount.toFixed(2) : "0.00"}
