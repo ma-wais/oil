@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
 import { server } from "../App";
 import { useNavigate } from "react-router-dom";
 import { BiLock, BiUser } from "react-icons/bi";
-import img from '../components/R.png'
+import img from "../components/R.png";
 const Login = ({ setToken, setUser, token }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -54,64 +54,115 @@ const Login = ({ setToken, setUser, token }) => {
   };
 
   return (
-    <div className="flex items-center bg-gray-100 justify-center min-h-screen m-auto">
-      <div className="max-w-[800px] flex">
-        <img
-          src={img}
-          alt=""
-          className="w-[380px] h-[380px] object-cover shadow-lg"
-        />
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 p-4">
+      <div className="max-w-4xl w-full flex shadow-2xl rounded-2xl overflow-hidden backdrop-blur-sm bg-white/10">
+        <div className="hidden md:block w-1/2 relative">
+          <img
+            src={img}
+            alt="Oil Kohlu"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
+        </div>
+
         <form
-          className="w-[380px] h-[380px] max-w-md px-8 py-6 text-left bg-white shadow-lg"
+          className="w-full md:w-1/2 px-8 md:px-12 py-10 bg-white"
           onSubmit={onSubmit}
         >
-          <h3 className="text-2xl font-bold mb-4 text-center">Oil Kohlu</h3>
-          <div className="relative mt-10">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Username
-            </label>
-            <div className="flex items-center">
-              <BiUser className="absolute left-3 text-gray-400" size={18} />
-              <input
-                type="text"
-                name="email"
-                placeholder="Enter your username"
-                className="w-full pl-10 pr-4 py-2 border focus:outline-none"
-                onChange={onChange}
-                required
-              />
-            </div>
+          <div className="text-center mb-8">
+            <h3 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+              Oil Kohlu
+            </h3>
+            <p className="text-gray-600">Sign in to your account</p>
           </div>
 
-          <div className="relative mt-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2 rounded"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <div className="flex items-center">
-              <BiLock className="absolute left-3 text-gray-400" size={18} />
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                onChange={onChange}
-                className="w-full pl-10 pr-4 py-2 border focus:outline-none rounded"
-                required
-              />
+          <div className="space-y-6">
+            <div className="relative">
+              <label
+                className="block text-gray-700 text-sm font-semibold mb-2"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <div className="relative">
+                <BiUser
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="Enter your username"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all duration-300"
+                  onChange={onChange}
+                  required
+                />
+              </div>
             </div>
+
+            <div className="relative">
+              <label
+                className="block text-gray-700 text-sm font-semibold mb-2"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <BiLock
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  onChange={onChange}
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all duration-300"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Logging in...
+                </span>
+              ) : (
+                "Login"
+              )}
+            </button>
           </div>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white mt-4 font-bold py-2 px-4 rounded"
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Secure login for authorized users only
+            </p>
+          </div>
         </form>
       </div>
     </div>

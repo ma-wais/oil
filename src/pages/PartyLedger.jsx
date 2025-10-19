@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import { server } from "../App";
 import Select from "react-select";
 import { useNavigate, useLocation } from "react-router-dom";

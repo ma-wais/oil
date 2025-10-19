@@ -1,33 +1,76 @@
-.nav-button{
-    position: relative;
-    color: black;
-    padding: 10px 10px 0px 10px;
-}
-.nav-button:hover{
-    background-color: rgb(216, 216, 216);
-    transition: all 0.5s;  
-}
-.dropdown{
-    position: absolute;
-    top: 60px;
-    background-color: rgb(243, 243, 243);
-    width: 170px;
-    left: 0px;
-    border: 1px solid rgb(204, 204, 204);
-}
-.dropdown a:hover {
-    background-color: rgb(216, 216, 216);
+.nav-button {
+  position: relative;
+  padding: 1px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-th, td{
-    font-size: 14px;
+.nav-button:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.dropdown {
+  position: absolute;
+  top: 55px;
+  background: white;
+  width: 200px;
+  left: 0px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: dropdownSlide 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown a {
+  transition: all 0.2s ease;
+  color: #334155;
+  font-weight: 500;
+}
+
+.dropdown a:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding-left: 20px;
+}
+
+th,
+td {
+  font-size: 14px;
+}
+
+th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+}
+
+td {
+  padding: 10px;
 }
 
 @media screen and (max-width: 600px) {
-    html {
-        font-size: 12px;
-    }
-    th, td{
-        font-size: 12px;
-    }
+  html {
+    font-size: 12px;
+  }
+  th,
+  td {
+    font-size: 12px;
+  }
 }

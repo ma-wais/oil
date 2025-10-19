@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 // import Select from 'react-select';
 import { server } from "../App";
 

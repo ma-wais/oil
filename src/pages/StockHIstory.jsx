@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import { server } from "../App";
 import Select from "react-select";
 
@@ -62,6 +62,30 @@ const StockHistory = () => {
           value={products.find((p) => p.value === productName)}
           isClearable
           className="w-full"
+          styles={{
+            control: (base) => ({
+              ...base,
+              backgroundColor: "white",
+              color: "#1f2937",
+            }),
+            singleValue: (base) => ({
+              ...base,
+              color: "#1f2937",
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused ? "#e5e7eb" : "white",
+              color: "#1f2937",
+            }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: "white",
+            }),
+            placeholder: (base) => ({
+              ...base,
+              color: "#9ca3af",
+            }),
+          }}
         />
       </div>
 

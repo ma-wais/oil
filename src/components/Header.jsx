@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/axios";
 import React, { useState } from "react";
 import {
   FaHome,
@@ -75,19 +75,19 @@ const Header = ({ setToken, setUser }) => {
   };
 
   return (
-    <header className="bg-white shadow">
-      <nav className="flex justify-between bg-gray-200">
-        <div className="flex flex-wrap gap ml-8"> 
+    <header className="bg-white shadow-lg sticky top-0 z-50">
+      <nav className="flex justify-between items-center px-6 py-2 bg-gradient-to-r from-slate-50 to-slate-100">
+        <div className="flex flex-wrap gap-2">
           <NavButton
             icon={
               <Link to="/home">
-                <FaHome className="text-lg" />
+                <FaHome className="text-xl" />
               </Link>
             }
             label="Homepage"
           />
           <NavButton
-            icon={<FaHandHoldingUsd className="text-lg" />}
+            icon={<FaHandHoldingUsd className="text-xl" />}
             label="Sale of goods"
             hasDropdown
             dropdownItems={dropdownItems.sales}
@@ -96,7 +96,7 @@ const Header = ({ setToken, setUser }) => {
             onItemClick={handleDropdownItemClick}
           />
           <NavButton
-            icon={<FaUserPlus className="text-lg" />}
+            icon={<FaUserPlus className="text-xl" />}
             label="Purchase"
             hasDropdown
             dropdownItems={dropdownItems.wealth}
@@ -105,7 +105,7 @@ const Header = ({ setToken, setUser }) => {
             onItemClick={handleDropdownItemClick}
           />
           <NavButton
-            icon={<FaHandHoldingUsd className="text-lg" />}
+            icon={<FaHandHoldingUsd className="text-xl" />}
             label="Stock"
             hasDropdown
             dropdownItems={dropdownItems.stock}
@@ -114,7 +114,7 @@ const Header = ({ setToken, setUser }) => {
             onItemClick={handleDropdownItemClick}
           />
           <NavButton
-            icon={<FaCog className="text-lg" />}
+            icon={<FaCog className="text-xl" />}
             label="Crushings"
             hasDropdown
             dropdownItems={dropdownItems.crushings}
@@ -124,12 +124,12 @@ const Header = ({ setToken, setUser }) => {
           />
           <Link to={"/sale-report"}>
             <NavButton
-              icon={<FaChartBar className="text-lg" />}
+              icon={<FaChartBar className="text-xl" />}
               label="Report"
             />
           </Link>
           <NavButton
-            icon={<FaCog className="text-lg" />}
+            icon={<FaCog className="text-xl" />}
             label="Back Office"
             hasDropdown
             dropdownItems={dropdownItems.boxOffice}
@@ -139,7 +139,7 @@ const Header = ({ setToken, setUser }) => {
           />
 
           <NavButton
-            icon={<FaUserPlus className="text-lg" />}
+            icon={<FaUserPlus className="text-xl" />}
             label="Stakeholders"
             hasDropdown
             dropdownItems={dropdownItems.stakeholders}
@@ -151,7 +151,7 @@ const Header = ({ setToken, setUser }) => {
 
         <button
           onClick={() => logout()}
-          className="px-2 h-10 mt-3 mr-4 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 shadow-md hover:shadow-lg transition-all duration-300"
         >
           Log Out
         </button>

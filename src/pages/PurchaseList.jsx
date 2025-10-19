@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import { ChevronDown, ChevronUp, Trash2, Printer } from "lucide-react";
 import { server } from "../App";
 import PrintableInvoice from "./PrintInvoice";

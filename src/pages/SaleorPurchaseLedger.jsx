@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import { server } from "../App";
 import Select from "react-select";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -83,6 +83,30 @@ const Ledger = () => {
             onChange={handleCustomerChange}
             value={selectedOption}
             className="w-[400px]"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "white",
+                color: "#1f2937",
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "#1f2937",
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused ? "#e5e7eb" : "white",
+                color: "#1f2937",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "white",
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: "#9ca3af",
+              }),
+            }}
           />
         </div>
         <button
@@ -115,18 +139,21 @@ const LedgerResults = () => {
 
         const previousDateTo = subtractOneDay(dateFrom);
 
-        const [ledgerRecordsResponse, prevLedgerRecordsResponse, contactResponse] = 
-          await Promise.all([
-            axios.get(`${server}/ledgerrecords`, {
-              params: { dateFrom, dateTo, customerName: accountName }
-            }),
-            axios.get(`${server}/ledgerrecords`, {
-              params: { dateTo: previousDateTo, customerName: accountName }
-            }),
-            axios.get(`${server}/contact`, {
-              params: { name: accountName }
-            })
-          ]);
+        const [
+          ledgerRecordsResponse,
+          prevLedgerRecordsResponse,
+          contactResponse,
+        ] = await Promise.all([
+          axios.get(`${server}/ledgerrecords`, {
+            params: { dateFrom, dateTo, customerName: accountName },
+          }),
+          axios.get(`${server}/ledgerrecords`, {
+            params: { dateTo: previousDateTo, customerName: accountName },
+          }),
+          axios.get(`${server}/contact`, {
+            params: { name: accountName },
+          }),
+        ]);
 
         const ledgerRecords = ledgerRecordsResponse.data;
         const prevLedgerRecords = prevLedgerRecordsResponse.data;
@@ -138,16 +165,21 @@ const LedgerResults = () => {
         setLedgerEntries(allEntries);
         console.log(allEntries);
 
-        const prevLedgerRecordsTotal = prevLedgerRecords.reduce((sum, record) => {
-          const amount = parseFloat(record.amount || 0);
-          return record.type === "dr" ? sum + amount : sum - amount;
-        }, 0);
+        const prevLedgerRecordsTotal = prevLedgerRecords.reduce(
+          (sum, record) => {
+            const amount = parseFloat(record.amount || 0);
+            return record.type === "dr" ? sum + amount : sum - amount;
+          },
+          0
+        );
 
-        const openingBalance = parseFloat(contact.openingDr || 0) - parseFloat(contact.openingCr || 0);
-        const calculatedPreviousBalance = openingBalance + prevLedgerRecordsTotal;
-        
+        const openingBalance =
+          parseFloat(contact.openingDr || 0) -
+          parseFloat(contact.openingCr || 0);
+        const calculatedPreviousBalance =
+          openingBalance + prevLedgerRecordsTotal;
+
         setPreviousBalance(calculatedPreviousBalance);
-
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");
@@ -200,23 +232,30 @@ const LedgerResults = () => {
   };
 
   const calculateTotals = () => {
-    return ledgerEntries.reduce((totals, entry) => {
-      const amount = parseFloat(entry.amount || 0);
-      if (entry.type === "dr") {
-        totals.totalDebit += amount;
-      } else if (entry.type === "cr") {
-        totals.totalCredit += amount;
-      }
-      return totals;
-    }, { totalDebit: 0, totalCredit: 0 });
+    return ledgerEntries.reduce(
+      (totals, entry) => {
+        const amount = parseFloat(entry.amount || 0);
+        if (entry.type === "dr") {
+          totals.totalDebit += amount;
+        } else if (entry.type === "cr") {
+          totals.totalCredit += amount;
+        }
+        return totals;
+      },
+      { totalDebit: 0, totalCredit: 0 }
+    );
   };
 
   const { totalDebit, totalCredit } = calculateTotals();
 
   return (
     <div className="p-8 max-w-[1000px] mx-auto border border-gray-300 rounded-lg shadow-lg mt-10">
-      <h2 className="text-2xl ml-4 font-bold text-center underline">Oil Kohlu</h2>
-      <h4 className="text-2xl font-bold my-4 underline text-right">Account Ledger</h4>
+      <h2 className="text-2xl ml-4 font-bold text-center underline">
+        Oil Kohlu
+      </h2>
+      <h4 className="text-2xl font-bold my-4 underline text-right">
+        Account Ledger
+      </h4>
       <p className="text-right underline">
         <b>From: </b> {dateFrom} <b>To: </b> {dateTo}
       </p>
@@ -238,11 +277,17 @@ const LedgerResults = () => {
             <th className="border bg-gray-300 py-2">Description</th>
             <th className="border bg-gray-300 px-2 py-2">Banam</th>
             <th className="border bg-gray-300 px-2 py-2">Jama</th>
-            <th colSpan="2" className="border bg-gray-300 py-2">Remaining</th>
+            <th colSpan="2" className="border bg-gray-300 py-2">
+              Remaining
+            </th>
           </tr>
           <tr>
-            <th className="border px-2 py-2 text-right underline" colSpan={6}>Previous</th>
-            <th className="border px-2 py-2" colSpan={2}>{previousBalance.toFixed(2)}</th>
+            <th className="border px-2 py-2 text-right underline" colSpan={6}>
+              Previous
+            </th>
+            <th className="border px-2 py-2" colSpan={2}>
+              {previousBalance.toFixed(2)}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -262,7 +307,11 @@ const LedgerResults = () => {
                 </td>
                 <td
                   className="border px-2 py-1"
-                  style={entry.saleInvoice || entry.purchaseInvoice ? { cursor: "pointer" } : null}
+                  style={
+                    entry.saleInvoice || entry.purchaseInvoice
+                      ? { cursor: "pointer" }
+                      : null
+                  }
                   onClick={() => {
                     if (entry.saleInvoice) {
                       openPrintableInvoice(entry.saleInvoice);
@@ -277,28 +326,31 @@ const LedgerResults = () => {
                 <td className="border px-2 py-2">
                   {entry.type === "dr" ? "Banam" : "Jama"}
                 </td>
-                <td className="border px-2 py-1" style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
-                  {!entry.saleInvoice && !entry.purchaseInvoice && entry.description}
+                <td
+                  className="border px-2 py-1"
+                  style={{ whiteSpace: "nowrap", fontSize: "12px" }}
+                >
+                  {!entry.saleInvoice &&
+                    !entry.purchaseInvoice &&
+                    entry.description}
                   {entry.saleInvoice && (
                     <div style={{ fontSize: "10px" }}>
-                      {
-                        entry.saleInvoice.items.map((item, index) => (
-                          <div key={index}>
-                           {item.description && (item.description + ", ")} {item.quantity}, {item.total}
-                          </div>
-                        ))
-                      }
+                      {entry.saleInvoice.items.map((item, index) => (
+                        <div key={index}>
+                          {item.description && item.description + ", "}{" "}
+                          {item.quantity}, {item.total}
+                        </div>
+                      ))}
                     </div>
                   )}
                   {entry.purchaseInvoice && (
                     <div style={{ fontSize: "10px" }}>
-                      {
-                        entry.purchaseInvoice.items.map((item, index) => (
-                          <div key={index}>
-                           {item.description && (item.description + ", ")} {item.quantity}, {item.total}
-                          </div>
-                        ))
-                      }
+                      {entry.purchaseInvoice.items.map((item, index) => (
+                        <div key={index}>
+                          {item.description && item.description + ", "}{" "}
+                          {item.quantity}, {item.total}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </td>
@@ -308,7 +360,9 @@ const LedgerResults = () => {
                 <td className="border px-2 py-2">
                   {entry.type === "cr" ? amount.toFixed(2) : "0.00"}
                 </td>
-                <td className="border px-2 py-2">{runningBalance.toFixed(2)}</td>
+                <td className="border px-2 py-2">
+                  {runningBalance.toFixed(2)}
+                </td>
                 <td className="border px-2 py-2">
                   {runningBalance > 0 ? "Banam" : "Jama"}
                 </td>
@@ -317,13 +371,27 @@ const LedgerResults = () => {
           })}
 
           <tr className="bg-gray-300">
-            <td colSpan={5} className="border px-2 py-2 font-bold text-right underline">Total</td>
-            <td className="border px-2 py-2 font-bold">{totalDebit.toFixed(2)}</td>
-            <td className="border px-2 py-2 font-bold">{totalCredit.toFixed(2)}</td>
-            <td className="border px-2 py-2 font-bold" colSpan={2}>{runningBalance.toFixed(2)}</td>
+            <td
+              colSpan={5}
+              className="border px-2 py-2 font-bold text-right underline"
+            >
+              Total
+            </td>
+            <td className="border px-2 py-2 font-bold">
+              {totalDebit.toFixed(2)}
+            </td>
+            <td className="border px-2 py-2 font-bold">
+              {totalCredit.toFixed(2)}
+            </td>
+            <td className="border px-2 py-2 font-bold" colSpan={2}>
+              {runningBalance.toFixed(2)}
+            </td>
           </tr>
           <tr>
-            <td colSpan={8} className="border bg-gray-300 px-2 py-2 font-bold underline">
+            <td
+              colSpan={8}
+              className="border bg-gray-300 px-2 py-2 font-bold underline"
+            >
               Current Balance
             </td>
             <td className="border bg-gray-300 px-2 py-2 font-bold">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import Select from "react-select";
 import { server } from "../App";
 
@@ -119,7 +119,7 @@ const ContactManagement = () => {
             setSelectedContact(e.value);
           }}
           placeholder="Select contact to update balance"
-          className="w-[400px]"
+          className="w-[400px] text-black"
         />
       </div>
 
@@ -132,31 +132,31 @@ const ContactManagement = () => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Amount"
-              className="border p-2 rounded mr-2 w-[400px]"
+              className="border p-2 rounded mr-2 w-[400px] text-gray-900"
             />
             <input
               type="text"
               placeholder="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border p-2 rounded mr-2 w-[400px]"
+              className="border p-2 rounded mr-2 w-[400px] text-gray-900"
             />
             <input
               type="text"
               placeholder="Bill No"
               value={billNo}
               onChange={(e) => setBillNo(e.target.value)}
-              className="border p-2 rounded mr-2 w-[400px]"
+              className="border p-2 rounded mr-2 w-[400px] text-gray-900"
             />
             <input
               type="date"
               onChange={(e) => setDate(e.target.value)}
-              className="border p-2 rounded mr-2 w-[400px]"
+              className="border p-2 rounded mr-2 w-[400px] text-gray-900"
             />
             <select
               name="balanceType"
               id="balanceType"
-              className="border p-2 rounded mr-2 w-[400px]"
+              className="border p-2 rounded mr-2 w-[400px] text-gray-900"
               onChange={(e) => setBalanceType(e.target.value)}
             >
               <option value="">Select type</option>
@@ -188,7 +188,7 @@ const ContactManagement = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="New contact name"
-              className="border p-2 rounded mr-2"
+              className="border p-2 rounded mr-2 text-gray-900"
             />
             {/* <select
               value={type}
@@ -220,14 +220,14 @@ const ContactManagement = () => {
         <div>
           <h3 className="text-lg font-semibold my-2">Edit Contact</h3>
           <input
-            className="border p-2 rounded mr-2"
+            className="border p-2 rounded mr-2 text-gray-900"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
           />
           <select
-            className="border p-2 rounded mr-2"
+            className="border p-2 rounded mr-2 text-gray-900"
             value={type}
             onChange={(e) => setType(e.target.value)}
           >

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/axios";
 import React, { useState } from "react";
 import { server } from "../App";
 import { useNavigate } from "react-router-dom";

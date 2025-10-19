@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import axios from "axios";
+import axios from "../utils/axios";
 import { server } from "../App";
 import PrintableInvoice from "./PrintInvoicesale";
 import ReactDOM from "react-dom";
@@ -116,7 +116,7 @@ function ProductTable() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!invoiceDetails.date || !invoiceDetails.customerName){
+    if (!invoiceDetails.date || !invoiceDetails.customerName) {
       alert("Please enter date and customer name");
       return;
     }
@@ -170,7 +170,7 @@ function ProductTable() {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-md max-w-1000px">
+    <div className="p-6 bg-white shadow-md rounded-md w-[95%] m-auto my-6">
       <h2 className="text-xl font-semibold mb-4">Product Sale Table</h2>
       <div className="grid grid-cols-4 gap-4 mb-4 text-right w-full">
         <div>
@@ -217,33 +217,59 @@ function ProductTable() {
             onChange={handleCustomerChange}
             value={selectedOption}
             className="w-[200px] sm:w-[310px]"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "white",
+                color: "#1f2937",
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "#1f2937",
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused ? "#e5e7eb" : "white",
+                color: "#1f2937",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "white",
+              }),
+            }}
           />
         </div>
       </div>
 
-      <table className="w-full table-auto my-10 text-right">
+      <table className="w-full table-auto my-10 text-right bg-white">
         <thead>
           <tr>
-            <th className="border px-4 py-2">Description</th>
-            <th className="border px-4 py-2">Quantity</th>
-            <th className="border px-4 py-2">Unit</th>
-            <th className="border px-4 py-2">Rate</th>
-            <th className="border px-4 py-2">Total</th>
-            <th className="border px-4 py-2">Action</th>
+            <th className="border px-4 py-2 text-white">Description</th>
+            <th className="border px-4 py-2 text-white">Quantity</th>
+            <th className="border px-4 py-2 text-white">Unit</th>
+            <th className="border px-4 py-2 text-white">Rate</th>
+            <th className="border px-4 py-2 text-white">Total</th>
+            <th className="border px-4 py-2 text-white">Action</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product, index) => (
-            <tr key={product.id}>
-              <td className="border px-4 py-2">{product.description}</td>
-              <td className="border px-4 py-2">{product.quantity}</td>
-              <td className="border px-4 py-2">{product.Unit}</td>
-              <td className="border px-4 py-2">{product.rate}</td>
-              <td className="border px-4 py-2">{product.total}</td>
+            <tr key={product.id} className="hover:bg-gray-50">
+              <td className="border px-4 py-2 text-gray-800">
+                {product.description}
+              </td>
+              <td className="border px-4 py-2 text-gray-800">
+                {product.quantity}
+              </td>
+              <td className="border px-4 py-2 text-gray-800">{product.Unit}</td>
+              <td className="border px-4 py-2 text-gray-800">{product.rate}</td>
+              <td className="border px-4 py-2 text-gray-800">
+                {product.total}
+              </td>
               <td className="border px-4 py-2">
                 <button
                   onClick={() => deleteProduct(product.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Delete
                 </button>
@@ -351,13 +377,13 @@ function ProductTable() {
       {showPrintableInvoice && (
         <div className="opacity-0">
           <PrintableInvoice
-          invoiceData={{
-            ...invoiceDetails,
-            products,
-            netAmount,
-            grandTotal,
-          }}
-        />
+            invoiceData={{
+              ...invoiceDetails,
+              products,
+              netAmount,
+              grandTotal,
+            }}
+          />
         </div>
       )}
     </div>

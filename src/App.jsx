@@ -11,7 +11,7 @@ import SalesInvoiceList from "./pages/SaleList";
 import StockSummaryReport from "./pages/Stock";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import axios from "axios";
+import axios from "./utils/axios";
 import CreateCrushing from "./pages/CreateCrushing";
 import CrushingRecords from "./pages/CrushingHistory";
 import UpdateStock from "./pages/UpdateStock";
@@ -22,8 +22,8 @@ import { Ledger, LedgerResults } from "./pages/SaleorPurchaseLedger";
 import TotalBalance from "./pages/Totals";
 import StockHistory from "./pages/StockHIstory";
 
-// export const server = "http://localhost:5000/api";
-export const server = "https://oil-api-grn9.onrender.com/api"
+export const server =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function App() {
   const [user, setUser] = useState();
@@ -57,7 +57,14 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+          <p className="mt-4 text-white text-xl font-semibold">Loading...</p>
+        </div>
+      </div>
+    );
   }
   return (
     <BrowserRouter>

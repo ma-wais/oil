@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import { ChevronDown, ChevronUp, Trash2, Printer } from "lucide-react";
 import { server } from "../App";
 import PrintableInvoice from "./PrintInvoice";
@@ -48,8 +48,8 @@ const SalesInvoiceList = () => {
 
   const openPrintableInvoice = (invoiceData) => {
     console.log("Invoice data being passed to PrintableInvoice:", invoiceData);
-    
-    const printWindow = window.open('', '_blank');
+
+    const printWindow = window.open("", "_blank");
     printWindow.document.write(`
       <html>
         <head>
@@ -69,7 +69,7 @@ const SalesInvoiceList = () => {
       try {
         ReactDOM.render(
           <PrintableInvoice invoiceData={invoiceData} />,
-          printWindow.document.getElementById('print-root'),
+          printWindow.document.getElementById("print-root"),
           () => {
             console.log("PrintableInvoice rendered in new window");
             printWindow.focus();
@@ -152,7 +152,8 @@ const SalesInvoiceList = () => {
               <td className="py-3 px-6 text-left">{invoice.billNo}</td>
               <td className="py-3 px-6 text-left">{invoice.customerName}</td>
               <td className="py-3 px-6 text-left">
-                {invoice &&invoice.items?.map((item) => item.description).join(", ") ||
+                {(invoice &&
+                  invoice.items?.map((item) => item.description).join(", ")) ||
                   "No Products"}
               </td>
               <td className="py-3 px-6 text-left">{invoice.grandTotal}</td>

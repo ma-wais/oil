@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { ChevronDown, ChevronUp, Printer } from 'lucide-react';
 import { server } from '../App';
 
