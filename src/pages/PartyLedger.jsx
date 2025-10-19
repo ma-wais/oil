@@ -152,9 +152,9 @@ const PartyLedgerResults = () => {
   
         setPreviousBalance(calculatedPreviousBalance);
   
-        console.log("Previous Sales Total:", previousSalesTotal);
-        console.log("Previous Ledgers Total:", previousLedgersTotal);
-        console.log("Calculated Previous Balance:", calculatedPreviousBalance);
+        // console.log("Previous Sales Total:", previousSalesTotal);
+        // console.log("Previous Ledgers Total:", previousLedgersTotal);
+        // console.log("Calculated Previous Balance:", calculatedPreviousBalance);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("An error occurred while fetching data.");

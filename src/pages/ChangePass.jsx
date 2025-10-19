@@ -10,7 +10,6 @@ const PasswordChangeForm = () => {
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem('token');
-    console.log('Stored token:', storedToken);
     if (storedToken) {
       setToken(storedToken);
     } else {
