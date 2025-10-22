@@ -40,6 +40,7 @@ function ProductTable() {
     try {
       const response = await axios.get(`${server}/contact`);
       setContacts(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
@@ -66,18 +67,16 @@ function ProductTable() {
     }));
   }, [productDetails.quantity, productDetails.rate]);
 
-  useEffect(() => {
-    const productsTotal = products.reduce((acc, product) => {
-      return acc + (parseFloat(product.total) || 0);
-    }, 0);
+useEffect(() => {
+  const productsTotal = products.reduce((acc, product) => {
+    return acc + (parseFloat(product.total) || 0);
+  }, 0);
 
-    setNetAmount(productsTotal.toFixed(2));
-    setGrandTotal(
-      Number(invoiceDetails.previousBalance) > 0
-        ? productsTotal + Number(invoiceDetails.previousBalance)
-        : productsTotal - Number(invoiceDetails.previousBalance)
-    );
-  }, [products, invoiceDetails, invoiceDetails.previousBalance]);
+  setNetAmount(productsTotal.toFixed(2));
+
+  setGrandTotal(productsTotal + Number(invoiceDetails.previousBalance));
+}, [products, invoiceDetails.previousBalance]);
+
 
   const addProduct = () => {
     const productWithDefaults = {
@@ -211,7 +210,7 @@ function ProductTable() {
     setInvoiceDetails({
       ...invoiceDetails,
       customerName: selectedOption.value,
-      previousBalance: selectedContact.openingDr - selectedContact.openingCr,
+      previousBalance: selectedContact.openingCr - selectedContact.openingDr,
     });
     setSelectedOption(selectedOption);
   };
